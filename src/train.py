@@ -1,14 +1,16 @@
-from torchvision.models import alexnet
-import torch
-import torch.nn as nn
-from torch.autograd import Variable
-import torch.nn.functional as F
-from tqdm import tqdm
 import argparse
 
-from data_loader import get_loader
-from utils import accuracy, Tracker
+import torch
+import torch.nn.functional as F
+from torch import nn
+from torch.autograd import Variable
+from torchvision.models import AlexNet_Weights, alexnet
+from tqdm import tqdm
+
 from coral import coral
+from data_loader import get_loader
+from paths import CHECKPOINTS_DIR, LOGS_DIR
+from utils import Tracker, accuracy
 
 
 def train(model, optimizer, source_loader, target_loader, tracker, args, epoch=0):
@@ -120,7 +122,7 @@ def main():
 
     # ~ Paper : "We initialized the other layers with the parameters pre-trained on ImageNet"
     # check https://github.com/pytorch/vision/blob/master/torchvision/models/alexnet.py
-    model = alexnet(pretrained=True)
+    model = alexnet(weights=AlexNet_Weights.IMAGENET1K_V1)
     # ~ Paper : The dimension of last fully connected layer (fc8) was set to the number of categories (31)
     model.classifier[6] = nn.Linear(4096, n_classes)
     # ~ Paper : and initialized with N(0, 0.005)
@@ -147,7 +149,12 @@ def main():
         evaluate(model, target_evaluate_loader, 'target', tracker, args, i)
 
     # Save logged classification loss, coral loss, source accuracy, target accuracy
-    torch.save(tracker.to_dict(), "log.pth")
+    # 'adaptation' (lambda > 0) / 'no_adaptation' (lambda = 0) are the names plot_accuracies_losses.py expects
+    run_name = 'adaptation' if args.lambda_coral > 0 else 'no_adaptation'
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
+    CHECKPOINTS_DIR.mkdir(parents=True, exist_ok=True)
+    torch.save(tracker.to_dict(), LOGS_DIR / f'log_{run_name}.pth')
+    torch.save(model.state_dict(), CHECKPOINTS_DIR / f'model_{run_name}.pth')
 
 
 if __name__ == '__main__':

@@ -1,14 +1,14 @@
-from torchvision.models import alexnet
-import torch.nn as nn
+from torch import nn
+from torchvision.models import AlexNet_Weights, alexnet
 
 
 class Net(nn.Module):
 
     def __init__(self, num_classes, pretrained=False):
-        super(Net, self).__init__()
+        super().__init__()
 
         # check https://github.com/pytorch/vision/blob/master/torchvision/models/alexnet.py
-        self.model = alexnet(pretrained=pretrained, num_classes=num_classes)
+        self.model = alexnet(weights=AlexNet_Weights.IMAGENET1K_V1 if pretrained else None, num_classes=num_classes)
 
         # if we want to feed 448x448 images
         # self.model.avgpool = nn.AdaptiveAvgPool2d(1)

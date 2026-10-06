@@ -1,7 +1,7 @@
 import torch
-from torchvision import transforms, datasets
-import numpy as np
-import matplotlib.pyplot as plt
+from torchvision import datasets, transforms
+
+from paths import DATASETS_DIR
 
 
 def get_loader(name_dataset, batch_size, train=True):
@@ -23,13 +23,13 @@ def get_loader(name_dataset, batch_size, train=True):
     }
 
     data_transform = transforms.Compose([
-            transforms.Scale(224),
+            transforms.Resize(224),
             transforms.ToTensor(),
             transforms.Normalize(mean=mean_std[name_dataset]['mean'],
                                  std=mean_std[name_dataset]['std'])
         ])
 
-    dataset = datasets.ImageFolder(root='./data/%s/images' % name_dataset,
+    dataset = datasets.ImageFolder(root=DATASETS_DIR / name_dataset / 'images',
                                    transform=data_transform)
     dataset_loader = torch.utils.data.DataLoader(dataset,
                                                  batch_size=batch_size, shuffle=train,

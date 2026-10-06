@@ -1,0 +1,8 @@
+.venv/
+amazon/
+dslr/
+webcam/
+__pycache__/
+
+datasets/
+results/

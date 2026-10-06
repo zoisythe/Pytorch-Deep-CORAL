@@ -35,25 +35,26 @@ To provide results comparable to the paper, have been considered:
 
 ```
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B4IapRTv9pJ1WGZVd1VDMmhwdlE' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=0B4IapRTv9pJ1WGZVd1VDMmhwdlE" -O office31.tar.gz && rm -rf /tmp/cookies.txt
-tar -xzf office31.tar.gz
 ```
 
-- Move the three folders composing the dataset in a new directory "data":
+- Extract the three folders composing the dataset (amazon, dslr, webcam) into `./datasets`:
 ```
-mkdir data
-mv amazon dslr webcam ./data
+mkdir datasets
+tar -xzf office31.tar.gz -C datasets
 ```
 
-- Train with default parameters:
+- Train with default parameters (run with `--lambda_coral 0` as well for the no-adaptation baseline):
 ```
-python train.py
+python src/train.py
+python src/train.py --lambda_coral 0
 ```
 After each training epoch, the model will be evaluated on source and target and the respective accuracies printed.
-source and target accuracies, classification loss and CORAL loss are saved in `./log.pth`
+Source and target accuracies, classification loss and CORAL loss are saved in `./results/logs/log_{adaptation,no_adaptation}.pth`,
+and the final weights in `./results/checkpoints/model_{adaptation,no_adaptation}.pth`.
 
-- Construct plots:
+- Construct plots (saved in `./results/plots`):
 ```
-python plot_accuracies_losses.py
+python src/plot_accuracies_losses.py
 ```
 
 

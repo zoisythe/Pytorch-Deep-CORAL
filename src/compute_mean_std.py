@@ -1,6 +1,8 @@
-import torch
-from torchvision import transforms, datasets
 import numpy as np
+import torch
+from torchvision import datasets, transforms
+
+from paths import DATASETS_DIR
 
 
 def compute_mean_std(path_dataset):
@@ -48,7 +50,7 @@ def main():
     mean_std = {}
     for dataset in ['amazon', 'dslr', 'webcam']:
         # Construct path
-        dataset_path = './data/%s/images' % dataset
+        dataset_path = DATASETS_DIR / dataset / 'images'
         values = compute_mean_std(dataset_path)
         # Add values to dict
         mean_std[dataset] = values

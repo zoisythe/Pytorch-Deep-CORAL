@@ -1,5 +1,5 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 import torch
 
 
@@ -42,7 +42,9 @@ class Tracker:
         return {k: list(map(list, v)) for k, v in self.data.items()}
 
     class ListStorage:
-        def __init__(self, monitors=[]):
+        def __init__(self, monitors=None):
+            if monitors is None:
+                monitors = []
             self.data = []
             self.monitors = monitors
             for monitor in self.monitors:
@@ -85,4 +87,4 @@ class Tracker:
                 self.first = False
             else:
                 m = self.momentum
-                self.value = m * self.value + (1 - m) * value
+                self.value = m * self.value + (1 - m) * value  # ty: ignore[unsupported-operator]
