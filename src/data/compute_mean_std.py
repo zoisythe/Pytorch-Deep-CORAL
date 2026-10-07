@@ -2,7 +2,8 @@ import numpy as np
 import torch
 from torchvision import datasets, transforms
 
-from paths import DATASETS_DIR
+from src.common.paths import DATASETS_DIR, SEED
+from src.data.data_loader import seed_worker
 
 
 def compute_mean_std(path_dataset):
@@ -15,10 +16,11 @@ def compute_mean_std(path_dataset):
         transforms.ToTensor()
     ])
 
-    dataset = datasets.ImageFolder(root=path_dataset,
-                                   transform=transform)
+    dataset = datasets.ImageFolder(root=path_dataset, transform=transform)
     # Choose a large batch size to better approximate. Optimally load the dataset entirely on memory.
-    data_loader = torch.utils.data.DataLoader(dataset, batch_size=4096, shuffle=False, num_workers=4)
+    data_loader = torch.utils.data.DataLoader(dataset, batch_size=4096, shuffle=False, num_workers=0,
+                                            generator=torch.Generator().manual_seed(SEED),
+                                            worker_init_fn=seed_worker)
 
     pop_mean = []
     pop_std = []

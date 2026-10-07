@@ -1,10 +1,21 @@
+import random
+
+import numpy as np
 import torch
 from torchvision import datasets, transforms
 
-from paths import DATASETS_DIR
+from src.common.paths import DATASETS_DIR, SEED
 
 
-def get_loader(name_dataset, batch_size, train=True):
+def seed_worker(worker_id):
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+
+
+def get_loader(name_dataset, batch_size, train=True, seed=42, num_workers=4):
+    if seed != SEED:
+        raise ValueError('DataLoader seed must be 42')
 
     # Computed with compute_mean_std.py
     mean_std = {
@@ -33,6 +44,11 @@ def get_loader(name_dataset, batch_size, train=True):
                                    transform=data_transform)
     dataset_loader = torch.utils.data.DataLoader(dataset,
                                                  batch_size=batch_size, shuffle=train,
-                                                 num_workers=4)
+                                                 num_workers=num_workers,
+                                                 drop_last=train,
+                                                 generator=torch.Generator().manual_seed(seed),
+                                                 worker_init_fn=seed_worker,
+                                                 persistent_workers=num_workers > 0,
+                                                 pin_memory=torch.cuda.is_available())
     return dataset_loader
 
