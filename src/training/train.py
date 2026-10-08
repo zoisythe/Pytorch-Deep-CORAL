@@ -17,7 +17,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-from src.common.experiment_protocol import SUITES, feature_protocol
+from src.common.experiment_protocol import ALL_LAYERS, RESNET_DEFAULTS, SUITES, feature_protocol
 from src.common.paths import (
     CONTROL_SETTINGS,
     ORIGINAL_DIR,
@@ -27,7 +27,7 @@ from src.common.paths import (
     suite_results_dir,
 )
 from src.core.coral import coral
-from src.core.model import CORAL_LAYERS, Net
+from src.core.model import Net
 from src.data.data_loader import get_loader
 from src.training.loss_balance import (DEFAULT_EMA_DECAY, DEFAULT_MIN_EPOCHS,
                                       DEFAULT_PATIENCE, DEFAULT_TOLERANCE, stopper_from_args)
@@ -37,15 +37,15 @@ def make_parser():
     parser = argparse.ArgumentParser(description='Train one Deep CORAL layer setting')
     parser.add_argument('--suite', choices=SUITES, default='original')
     parser.add_argument('--disable_cuda', action='store_true')
-    parser.add_argument('--epochs', type=int, default=50)
-    parser.add_argument('--batch_size', type=int, default=128)
+    parser.add_argument('--epochs', type=int)
+    parser.add_argument('--batch_size', type=int)
     parser.add_argument('--lr', type=float, default=1e-3)
     parser.add_argument('--decay', type=float, default=5e-4, help='SGD weight decay')
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--lambda_coral', type=float, default=0.5)
     parser.add_argument('--source', choices=('amazon', 'dslr', 'webcam'), default='amazon')
     parser.add_argument('--target', choices=('amazon', 'dslr', 'webcam'), default='webcam')
-    parser.add_argument('--coral_layers', nargs='+', choices=CORAL_LAYERS, default=['fc8'])
+    parser.add_argument('--coral_layers', nargs='+', choices=ALL_LAYERS)
     parser.add_argument('--seed', type=int, choices=(SEED,), default=SEED)
     parser.add_argument('--results_dir', type=Path, help='Defaults to a separate directory for each suite')
     parser.add_argument('--num_workers', type=int, default=0 if os.name == 'nt' else 4,
@@ -61,6 +61,11 @@ def make_parser():
 
 
 def validate_args(args):
+    resnet = args.suite == 'resnet50'
+    args.epochs = args.epochs if args.epochs is not None else (100 if resnet else 50)
+    args.batch_size = args.batch_size if args.batch_size is not None else (32 if resnet else 128)
+    if args.coral_layers is None:
+        args.coral_layers = ['logits' if resnet else 'fc8']
     if args.epochs < 1 or args.batch_size < 2 or args.num_workers < 0:
         raise ValueError('epochs >= 1, batch_size >= 2 and num_workers >= 0 are required')
     values = (args.lr, args.decay, args.momentum, args.lambda_coral)
@@ -77,6 +82,15 @@ def validate_args(args):
     if args.lambda_coral == 0:
         # Separate optimization (none) from the suite's shared monitoring layers.
         args.coral_layers = ()
+    if resnet:
+        differences = [key for key, value in RESNET_DEFAULTS.items() if getattr(args, key) != value]
+        if differences:
+            raise ValueError(f'ResNet suite uses the locked protocol: {differences}')
+        if args.lambda_coral not in (0.0, 0.5) or (args.lambda_coral > 0 and
+                args.coral_layers not in SUITES['resnet50']['settings']):
+            raise ValueError('ResNet requires one of the five planned placements with lambda=0.5, or lambda=0')
+        args.stop_on_loss_balance = args.lambda_coral > 0
+        args.results_dir = args.results_dir or suite_results_dir('resnet50')
     if args.stop_on_loss_balance:
         if args.suite == 'original' or args.lambda_coral != 0.5:
             raise ValueError('Loss-balance stopping requires an advanced run with fixed lambda=0.5')
@@ -137,9 +151,10 @@ def train(model, optimizer, source_loader, target_loader, args, epoch=0):
         source_label = source_label.to(args.device, non_blocking=True)
         target_data = target_data.to(args.device, non_blocking=True)
         optimizer.zero_grad(set_to_none=True)
+        bn_before = model.batchnorm_counts() if args.suite == 'resnet50' else None
         out_source, source_features = model(source_data, return_features=True)
         if args.lambda_coral == 0:
-            # Still forward the target to keep the Dropout RNG schedule identical.
+            # Preserve the target forward, including shared BatchNorm updates.
             with torch.no_grad():
                 _, target_features = model(target_data, return_features=True)
                 per_layer, coral_mean, weighted = adaptation_loss(
@@ -148,8 +163,16 @@ def train(model, optimizer, source_loader, target_loader, args, epoch=0):
             _, target_features = model(target_data, return_features=True)
             per_layer, coral_mean, weighted = adaptation_loss(
                 source_features, target_features, args.coral_layers, args.lambda_coral, args.monitor_layers)
+        if bn_before is not None and any(value != bn_before[name] + 2
+                for name, value in model.batchnorm_counts().items()):
+            raise RuntimeError('BatchNorm must update once per domain, twice per training step')
         classification = F.cross_entropy(out_source, source_label)
         total = classification + weighted
+        if args.suite == 'resnet50' and args.coral_layers and steps == 0 and epoch == 0:
+            gradients = torch.autograd.grad(weighted, [target_features[layer] for layer in args.coral_layers],
+                                            retain_graph=True)
+            if any(not torch.isfinite(gradient).all() for gradient in gradients):
+                raise RuntimeError('Non-finite target CORAL gradient')
         values = {
             'classification_loss': classification.item(),
             'CORAL_loss': coral_mean.item(),
@@ -160,13 +183,18 @@ def train(model, optimizer, source_loader, target_loader, args, epoch=0):
         if not all(math.isfinite(v) for v in values.values()):
             raise FloatingPointError(f'Non-finite loss in epoch {epoch + 1}, step {steps + 1}')
         total.backward()
+        if args.suite == 'resnet50' and steps == 0 and epoch == 0:
+            gradients = (model.model.conv1.weight.grad, model.model.fc.weight.grad)
+            if any(gradient is None or not torch.isfinite(gradient).all() for gradient in gradients):
+                raise RuntimeError('Missing or non-finite backbone/classifier gradient')
         optimizer.step()
         for name, value in values.items():
             totals[name] = totals.get(name, 0.0) + value
         steps += 1
     if not steps:
         raise ValueError('Both training domains need at least one complete batch')
-    return {'train_steps': steps, **{k: v / steps for k, v in totals.items()}}
+    return {'train_steps': steps, **({'bn_updates_per_module': 2 * steps} if args.suite == 'resnet50' else {}),
+            **{k: v / steps for k, v in totals.items()}}
 
 
 @torch.no_grad()
@@ -211,8 +239,9 @@ def collect_environment(args):
 def run(args):
     args = validate_args(args)
     stopper = stopper_from_args(args) if args.stop_on_loss_balance else None
-    run_dir = experiment_dir(args.results_dir, args.coral_layers, args.seed, args.lambda_coral)
-    if args.suite != 'original':
+    resnet = args.suite == 'resnet50'
+    run_dir = experiment_dir(args.results_dir, args.coral_layers, args.seed, args.lambda_coral, args.suite)
+    if args.suite not in ('original', 'resnet50'):
         from src.plotting.plot_accuracies_losses import validate_frozen_controls
         validate_frozen_controls(args, allow_epoch_difference=stopper is not None)
         if run_dir.name in CONTROL_SETTINGS and stopper is None:
@@ -233,13 +262,24 @@ def run(args):
     if min(len(source_train), len(target_train)) < 1:
         raise ValueError('Both training domains need at least one complete batch')
 
-    model = Net(len(source_train.dataset.classes), pretrained=True,
-                coral_layers=args.monitor_layers).to(args.device)
-    optimizer = torch.optim.SGD([
-        {'params': model.model.features.parameters()},
-        {'params': model.model.classifier[:6].parameters()},
-        {'params': model.model.classifier[6].parameters(), 'lr': 10 * args.lr},
-    ], lr=args.lr, momentum=args.momentum, weight_decay=args.decay)
+    if resnet:
+        from src.core.resnet import ResNetNet
+        if (len(source_train.dataset), len(target_train.dataset), len(source_train.dataset.classes)) != (2817, 795, 31):
+            raise ValueError('ResNet protocol requires Office-31 Amazon→Webcam (2817/795 samples, 31 classes)')
+        model = ResNetNet(31, coral_layers=args.monitor_layers).to(args.device)
+        groups = model.optimizer_groups(args.lr)
+        parameter_ids = [id(parameter) for group in groups for parameter in group['params']]
+        if len(parameter_ids) != len(set(parameter_ids)) or set(parameter_ids) != {id(p) for p in model.parameters()}:
+            raise RuntimeError('Optimizer must cover each model parameter exactly once')
+    else:
+        model = Net(len(source_train.dataset.classes), pretrained=True,
+                    coral_layers=args.monitor_layers).to(args.device)
+        groups = [
+            {'params': model.model.features.parameters()},
+            {'params': model.model.classifier[:6].parameters()},
+            {'params': model.model.classifier[6].parameters(), 'lr': 10 * args.lr},
+        ]
+    optimizer = torch.optim.SGD(groups, lr=args.lr, momentum=args.momentum, weight_decay=args.decay)
     config = {k: str(v) if isinstance(v, (Path, torch.device)) else v
               for k, v in vars(args).items() if k != 'overwrite'}
     config.update(schema_version=3, setting=run_dir.name,
@@ -256,16 +296,26 @@ def run(args):
                   evaluation_loader_seeds=[SEED, SEED], worker_seed=SEED,
                   seed_policy='all_rngs_42',
                   original_controls=str(ORIGINAL_DIR) if args.suite != 'original' else None)
+    if resnet:
+        config.update(schema_version=6, backbone='resnet50', pretrained='IMAGENET1K_V2',
+                      bn_policy='shared_source_then_target', bn_momentum=0.1,
+                      pooling='spatial_mean', precision='float32', activation_checkpointing=False,
+                      classifier_weight_std=0.005, classifier_bias=0.01, classifier_lr_multiplier=10,
+                      original_controls=None, baseline_directory=str(args.results_dir / 'no_coral'))
+        for key in ('fc8_weight_std', 'fc8_bias', 'fc8_lr_multiplier'):
+            config.pop(key)
     environment = collect_environment(args)
     run_dir.mkdir(parents=True, exist_ok=True)
     # Remove the completion marker first when an explicit rerun replaces a run.
     (run_dir / 'summary.json').unlink(missing_ok=True)
+    if resnet:
+        (run_dir / 'failure.json').unlink(missing_ok=True)
     write_json(run_dir / 'config.json', config)
     write_json(run_dir / 'environment.json', environment)
     if args.device.type == 'cuda':
         torch.cuda.reset_peak_memory_stats(args.device)
     rows, best = [], None
-    if stopper is not None:
+    if stopper is not None or resnet:
         from src.training.evaluation import evaluate_with_predictions, save_epoch
         (run_dir / 'best_epoch.json').unlink(missing_ok=True)
         (run_dir / 'stop_epoch.json').unlink(missing_ok=True)
@@ -276,16 +326,19 @@ def run(args):
         try:
             for epoch in range(args.epochs):
                 training = train(model, optimizer, source_train, target_train, args, epoch)
-                if stopper is not None:
+                if stopper is not None or resnet:
                     # Observe only training losses; labels/accuracy never enter the stop decision.
-                    balance = stopper.update(epoch + 1, training['classification_loss'], training['weighted_CORAL_loss'])
+                    balance = stopper.update(epoch + 1, training['classification_loss'], training['weighted_CORAL_loss']) if stopper else {}
+                    bn_snapshot = model.batchnorm_snapshot() if resnet else None
                     source_metrics, source_predictions = evaluate_with_predictions(model, source_eval, 'source', args)
                     target_metrics, target_predictions = evaluate_with_predictions(model, target_eval, 'target', args)
+                    if resnet:
+                        model.assert_batchnorm_unchanged(bn_snapshot)
                     row = {'epoch': epoch + 1, **training, **balance, **source_metrics, **target_metrics}
                     if best is None or row['target_accuracy'] > best['target_accuracy']:
                         best = row
                         save_epoch(run_dir, row, (source_predictions, target_predictions), loaders[2:])
-                    if balance['balance_stop'] or epoch + 1 == args.epochs:
+                    if balance.get('balance_stop') or epoch + 1 == args.epochs:
                         save_epoch(run_dir, row, (source_predictions, target_predictions), loaders[2:], name='stop_epoch')
                 else:
                     row = {'epoch': epoch + 1, **training,
@@ -321,6 +374,15 @@ def run(args):
                                selected_target_accuracy=rows[-1]['target_accuracy'],
                                selection_metric='training_stop', best_epoch_data='best_epoch.json',
                                stop_epoch_data='stop_epoch.json', original_controls_retrained=False)
+            if resnet:
+                summary.update(training_complete=True, max_epochs=args.epochs, stop_epoch=len(rows),
+                               stop_reason='loss_balance' if stopper and rows[-1]['balance_stop'] else 'max_epochs',
+                               stopped_early=len(rows) < args.epochs, steps_completed=sum(r['train_steps'] for r in rows),
+                               selected_epoch=len(rows), selected_target_accuracy=rows[-1]['target_accuracy'],
+                               selection_metric='training_stop', best_epoch_data='best_epoch.json',
+                               stop_epoch_data='stop_epoch.json', original_controls_retrained=False,
+                               batchnorm_training_verified=True, batchnorm_evaluation_verified=True,
+                               optimizer_coverage_verified=True, feature_gradient_verified=True)
             write_json(run_dir / 'summary.json', summary)
         except BaseException:
             log_file.write(traceback.format_exc())

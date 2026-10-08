@@ -42,6 +42,8 @@ def main(suite='fc_layers'):
     parser.set_defaults(suite=suite)
     parser.add_argument('--resume', action='store_true', help='Skip matching, fully completed runs')
     args = validate_args(parser.parse_args())
+    if args.suite == 'resnet50':
+        parser.error('Use src.experiments.resnet50.run for its independent baseline and stopping protocol')
     if args.stop_on_loss_balance:
         parser.error('Use src.experiments.loss_balance.run for variable-length fixed-weight runs')
     if args.lambda_coral <= 0:

@@ -4,17 +4,36 @@ Office-31 Amazon → Webcam；基于 [Deep CORAL](https://arxiv.org/abs/1607.017
 
 近期结果见 [研究报告](reports/2026-10-08-coral-experiments.md)：不同层、adaptive_lambda 与早停策略选择；[reports/](reports/README.md) 同时归档可直接查看的数据表和 PNG 图。
 
+## ResNet-50 V2 六组实验
+
+固定协议见 [ResNet-50 实验协议](reports/resnet50-protocol.md)。使用 `IMAGENET1K_V2`、batch=32、seed=42，串行运行 no_coral、logits、pooled、pooled_logits、layer4、layer4_logits。五个 CORAL 组最多 100 轮并按现有损失平衡规则早停；no_coral 跑满 100 轮，用作各组停止轮的同轮对照。
+
+两域依次更新共享 BatchNorm，因此 no_coral 是相同 BatchNorm 策略下的无 CORAL 对照，不是纯 source-only。ResNet 结果独立归档到 `results/resnet50/`，不引用或替换 AlexNet 原始对照。
+
+```powershell
+uv run --no-sync python -m src.experiments.resnet50.run
+uv run --no-sync python -m src.experiments.resnet50.run --resume
+# 从完成的 CSV/预测数据重新校验并绘图
+uv run --no-sync python -m src.plotting.plot_resnet50
+# 只运行一个 ResNet 设置（独立使用时会拒绝覆盖已有结果）
+uv run --no-sync python -m src.training.train --suite resnet50 --coral_layers layer4 logits
+```
+
+主指标为停止轮准确率和相对 no_coral 同轮的增益；最佳轮仅作补充。每组保存最佳/停止轮预测、CSV/JSON、train.log 和 PNG，不生成模型 checkpoint。`--resume` 仅跳过匹配且校验完整的运行，中断训练需显式覆盖重跑。显存不足或非有限损失不自动调整配置。
+
+六组已完成并通过统一核验，见 [ResNet-50 V2 六组报告](reports/resnet50/report.md)。layer4_logits 在第 42 轮停止，目标准确率 81.76%（650/795），比 no_coral 同轮高 3.65 个百分点。单独 pooled/layer4 的同轮增益为 +0.38/−0.13 个百分点；单种子结果仅作后续实验线索。
+
 ## 当前实验约定
 
 - 新运行所有随机 seed 固定为 **42**，包括 Python、NumPy、PyTorch、CUDA、DataLoader、worker；目标域不再加偏移。
 - 原始实验为 `no_adaptation`（仅 CE）和 `fc8`（CE + 0.5 CORAL(fc8)）。重跑后集中归档到 `results/original/`。
-- 所有进阶实验引用原始归档，不重跑、不复制对照组。缺失或不兼容的原始数据会报错。
+- AlexNet 进阶实验引用原始归档，不重跑、不复制对照组。缺失或不兼容的原始数据会报错；ResNet 使用自己的独立对照。
 - 使用 CSV/JSON 保存数据，不生成 `.pth`；实验输出图片只使用 PNG，数据集保留原始格式。
 - 结果目录不包含 `seed_42` 中间层，seed 写入配置。历史配置和实际采样 seed 保留；新运行不再计算或比较文件、代码哈希。
 
 ```text
 src/
-  core/                 # AlexNet、CORAL 数学实现
+  core/                 # AlexNet、ResNet-50、CORAL 数学实现
   data/                 # 加载、统计
   common/               # 路径、seed、协议、通用工具
   training/             # 共用训练循环、套件运行器

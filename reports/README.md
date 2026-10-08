@@ -1,8 +1,12 @@
 # 研究报告归档
 
 - [2026-10-08：Deep CORAL 层位置、权重学习与早停](2026-10-08-coral-experiments.md)：整理 14 个已完成的 seed=42 运行，以及固定权重日志的早停回放。
+- [ResNet-50 V2 实验协议](resnet50-protocol.md)：六组、共享 BatchNorm、batch=32 与停止轮同轮对照的固定设计。
+- [ResNet-50 V2 六组实验报告](resnet50/report.md)：六组训练、同轮增益与错误数变化、四宫格和早停信号、结构/预训练/BatchNorm 的解释边界，以及训练成本和归档核验。
 
-报告、PNG 图和用于分析的 CSV/JSON 快照一同纳入版本管理。完整训练产物仍保存在本地 `results/`；本次整理没有运行训练或转换数据集。
+报告、PNG 图和用于分析的 CSV/JSON 快照一同纳入版本管理。完整训练产物仍保存在本地 `results/`；AlexNet 简报使用已有日志整理，没有重新训练或转换数据集。
+
+ResNet-50 六组新训练已完成，独立比较报告和 CSV/PNG 快照归档于 [resnet50/](resnet50/)；其完整结果位于 `results/resnet50/`。原有 AlexNet 归档保持原样。
 
 | 文件 | 内容 |
 |---|---|

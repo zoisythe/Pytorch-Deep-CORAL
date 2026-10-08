@@ -32,7 +32,10 @@ def monitored_layers(config):
 
 def validate_protocol(config):
     version = config.get('schema_version')
-    if version == 1:
+    if version == 6:
+        from src.common.experiment_protocol import validate_resnet_protocol
+        validate_resnet_protocol(config)
+    elif version == 1:
         if not config['coral_layers'] or not set(config['coral_layers']).issubset(SUITES['fc_layers']['monitor_layers']):
             raise ValueError('Historical schema 1 only supports fully connected layers')
         if config['feature_location'] != 'linear_output_before_relu' or config['covariance'] != 'unbiased_centered_gram':
@@ -240,6 +243,11 @@ def plot_run(run_dir, config, data, baseline):
 def plot_experiments(results_dir, seed, settings=None, suite='fc_layers'):
     if seed != SEED:
         raise ValueError('All experiments require seed=42')
+    if suite == 'resnet50':
+        if settings is not None:
+            raise ValueError('ResNet comparison requires all six completed settings')
+        from src.plotting.plot_resnet50 import plot_experiments as plot_resnet
+        return plot_resnet(results_dir)
     suite_settings = ('no_adaptation', *('_'.join(layers) for layers in SUITES[suite]['settings']))
     selected = list(suite_settings if settings is None else dict.fromkeys(('no_adaptation', *settings)))
     if not set(selected).issubset(suite_settings):

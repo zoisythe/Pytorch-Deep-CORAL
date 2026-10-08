@@ -12,15 +12,17 @@ CONTROL_SETTINGS = ('no_adaptation', 'fc8')
 
 
 def suite_results_dir(suite):
+    if suite == 'resnet50':
+        return RESULTS_DIR / 'resnet50'
     if suite == 'original':
         return ORIGINAL_DIR
     return CONV_EXPERIMENTS_DIR if suite == 'conv5_fc8' else EXPERIMENTS_DIR
 
 
-def experiment_dir(results_dir, layers, seed, lambda_coral):
+def experiment_dir(results_dir, layers, seed, lambda_coral, suite=None):
     if seed != SEED:
         raise ValueError('All experiments require seed=42')
-    setting = '_'.join(layers) if lambda_coral > 0 else 'no_adaptation'
+    setting = '_'.join(layers) if lambda_coral > 0 else ('no_coral' if suite == 'resnet50' else 'no_adaptation')
     return Path(results_dir) / setting
 
 
