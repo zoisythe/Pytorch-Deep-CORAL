@@ -33,7 +33,7 @@ def check_resume(run_dir, args, layers, weight, environment):
         raise ValueError(f'Cannot resume incompatible configuration or protocol: {run_dir}')
     recorded_environment = json.loads((run_dir / 'environment.json').read_text(encoding='utf-8'))
     if environment_differences(recorded_environment, environment):
-        raise ValueError(f'Cannot resume different code or environment: {run_dir}')
+        raise ValueError(f'Cannot resume a different runtime environment: {run_dir}')
 
 
 def main(suite='fc_layers'):
@@ -42,6 +42,8 @@ def main(suite='fc_layers'):
     parser.set_defaults(suite=suite)
     parser.add_argument('--resume', action='store_true', help='Skip matching, fully completed runs')
     args = validate_args(parser.parse_args())
+    if args.stop_on_loss_balance:
+        parser.error('Use src.experiments.loss_balance.run for variable-length fixed-weight runs')
     if args.lambda_coral <= 0:
         parser.error('The adaptation weight must be positive for the experiment suite')
     if args.resume and args.overwrite:

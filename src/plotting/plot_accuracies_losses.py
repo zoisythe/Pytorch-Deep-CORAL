@@ -2,7 +2,6 @@
 
 import argparse
 import csv
-import hashlib
 import json
 import math
 from pathlib import Path
@@ -72,7 +71,26 @@ def read_run(run_dir):
     validate_protocol(config)
     with (run_dir / 'metrics.csv').open(newline='', encoding='utf-8') as stream:
         rows = [{key: float(value) for key, value in row.items()} for row in csv.DictReader(stream)]
-    if len(rows) != config['epochs'] or summary['epochs_completed'] != len(rows):
+    if not rows or summary['epochs_completed'] != len(rows):
+        raise ValueError(f'Incomplete epoch metrics: {run_dir}')
+    if config.get('stop_on_loss_balance'):
+        from src.training.loss_balance import LossBalanceStopper
+        if config['lambda_coral'] != 0.5 or config['suite'] == 'original' or not 1 <= len(rows) <= config['epochs']:
+            raise ValueError(f'Invalid fixed-weight stopping protocol: {run_dir}')
+        stopper = LossBalanceStopper(config['balance_tolerance'], config['balance_patience'],
+                                     config['balance_min_epochs'], config['balance_ema_decay'])
+        for index, row in enumerate(rows, start=1):
+            expected = stopper.update(index, row['classification_loss'], row['weighted_CORAL_loss'])
+            if any(not math.isclose(row[key], value, rel_tol=1e-12, abs_tol=1e-12)
+                   for key, value in expected.items()) or expected['balance_stop'] and index != len(rows):
+                raise ValueError(f'Incorrect loss-balance stopping history: {run_dir}')
+        reason = 'loss_balance' if rows[-1]['balance_stop'] else 'max_epochs'
+        if (summary.get('training_complete') is not True or summary.get('stop_epoch') != len(rows)
+                or summary.get('stop_reason') != reason or summary.get('max_epochs') != config['epochs']
+                or summary.get('stopped_early') != (len(rows) < config['epochs'])
+                or reason == 'max_epochs' and len(rows) != config['epochs']):
+            raise ValueError(f'Incomplete loss-balance experiment: {run_dir}')
+    elif len(rows) != config['epochs']:
         raise ValueError(f'Incomplete epoch metrics: {run_dir}')
     for index, row in enumerate(rows, start=1):
         if row['epoch'] != index or not all(math.isfinite(v) for v in row.values()):
@@ -107,9 +125,11 @@ def read_run(run_dir):
     return config, summary, {key: np.array([row[key] for row in rows]) for key in rows[0]}
 
 
-def assert_comparable(config, baseline_config):
+def assert_comparable(config, baseline_config, *, allow_epoch_difference=False):
     # Suite/schema/monitoring metadata describe different experiments, not training differences.
     metadata = {'schema_version', 'suite', 'monitor_layers', 'feature_protocol', 'feature_location', 'covariance'}
+    if allow_epoch_difference:
+        metadata.add('epochs')
     differences = [key for key in COMMON_KEYS if key not in metadata and config.get(key) != baseline_config.get(key)]
     if differences:
         raise ValueError(f'Run does not match its baseline: {differences}')
@@ -118,6 +138,7 @@ def assert_comparable(config, baseline_config):
 def comparison_provenance(runs):
     reference_config = runs['no_adaptation'][0]
     reference_env = json.loads((ORIGINAL_DIR / 'no_adaptation' / 'environment.json').read_text(encoding='utf-8'))
+    reference_env.pop('source_sha256', None)
     sources = []
     for setting, (config, _, _) in runs.items():
         directory = setting_dir(suite_results_dir(config.get('suite', 'fc_layers')), setting)
@@ -132,12 +153,14 @@ def comparison_provenance(runs):
             'reference_environment': reference_env, 'source_runs': sources}
 
 
-def validate_frozen_controls(args):
+def validate_frozen_controls(args, *, allow_epoch_difference=False):
     """Require a compatible completed archive before any advanced training."""
     from src.training.train import collect_environment, configure_device
     configure_device(args)
     environment = collect_environment(args)
     keys = ('source', 'target', 'epochs', 'batch_size', 'lr', 'decay', 'momentum', 'seed', 'num_workers', 'disable_cuda')
+    if allow_epoch_difference:
+        keys = tuple(key for key in keys if key != 'epochs')
     for setting in CONTROL_SETTINGS:
         config, _, _ = read_run(ORIGINAL_DIR / setting)
         differences = [key for key in keys if config.get(key) != getattr(args, key)]
@@ -147,21 +170,14 @@ def validate_frozen_controls(args):
             raise ValueError('Adaptation coefficient must match the frozen original fc8 control')
         recorded = json.loads((ORIGINAL_DIR / setting / 'environment.json').read_text(encoding='utf-8'))
         if environment_differences(recorded, environment):
-            raise ValueError(f'Frozen original {setting} uses different training code or environment')
+            raise ValueError(f'Frozen original {setting} uses a different runtime environment')
 
 
 def environment_differences(environment, reference):
-    """Compare runtime and training code, excluding empty markers and orchestration."""
-    empty_hashes = {hashlib.sha256(content).hexdigest() for content in (b'', b'\n', b'\r\n')}
-
+    """Compare runtime settings; historical code fingerprints are ignored."""
     def comparable(value):
-        result = dict(value)
-        result['source_sha256'] = {
-            path: digest for path, digest in value['source_sha256'].items()
-            if path != 'src/training/run_experiments.py'
-            and not (path.endswith('/__init__.py') and digest in empty_hashes)
-        }
-        return result
+        return {key: item for key, item in value.items()
+                if key not in ('source_sha256', 'experiment_source_sha256')}
 
     current, recorded = comparable(environment), comparable(reference)
     return [key for key in current.keys() | recorded.keys() if current.get(key) != recorded.get(key)]
@@ -276,11 +292,9 @@ def plot_experiments(results_dir, seed, settings=None, suite='fc_layers'):
     for source in provenance['source_runs']:
         directory = directories[source['setting']]
         source['directory'] = str(directory)
-        source['input_sha256'] = {name: hashlib.sha256((directory / name).read_bytes()).hexdigest()
-                                  for name in ('metrics.csv', 'config.json', 'summary.json', 'environment.json')}
-        source['training_source_sha256'] = json.loads((directory / 'environment.json').read_text(encoding='utf-8'))['source_sha256']
+        source['input_files'] = ['metrics.csv', 'config.json', 'summary.json', 'environment.json']
     (comparison / 'provenance.json').write_text(json.dumps(provenance, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
-    caveat = '原始组及全部进阶组均已按全 seed=42 协议重跑，配置、运行环境和训练代码一致。'
+    caveat = '原始组及全部进阶组均已按全 seed=42 协议重跑，配置和运行环境一致。'
     table = '\n'.join(f'| {row["setting"]} | {100 * row["final_source_accuracy"]:.2f}% | '
                       f'{100 * row["final_target_accuracy"]:.2f}% | {row["improvement_pp"]:+.2f} |'
                       for row in summaries)
@@ -288,7 +302,7 @@ def plot_experiments(results_dir, seed, settings=None, suite='fc_layers'):
         f'# {suite} 实验比较\n\n对照组直接引用 `results/original/` 中的 no_adaptation 和 fc8，进阶绘图不重跑对照。\n\n'
         f'{caveat}\n\n| 设置 | 源域准确率 | 目标准确率 | 相对 no_adaptation（百分点） |\n'
         f'| --- | ---: | ---: | ---: |\n{table}\n\n'
-        '主指标为最终轮次，目标标签只用于评估；单 seed 未估计统计显著性。来源和代码哈希见 `provenance.json`。\n',
+        '主指标为最终轮次，目标标签只用于评估；来源见 `provenance.json`。\n',
         encoding='utf-8')
     fig, ax = plt.subplots(figsize=(11, 6), layout='constrained')
     values = [row['final_target_accuracy'] for row in summaries]

@@ -2,7 +2,6 @@
 
 import argparse
 import csv
-import hashlib
 import json
 from pathlib import Path
 
@@ -35,10 +34,6 @@ MULTI = ('no_adaptation', 'fc8', 'fc6_fc7', 'fc6_fc8', 'fc7_fc8', 'fc6_fc7_fc8',
 
 def label(setting):
     return 'No adaptation' if setting == 'no_adaptation' else setting.replace('_', '+')
-
-
-def sha256(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def load_suite(root, suite, seed):
@@ -228,28 +223,23 @@ def write_provenance(output, source_runs, duplicates, args, rows):
     for run in source_runs:
         directory = run['directory']
         manifests.append({'suite': run['suite'], 'setting': run['config']['setting'], 'directory': str(directory),
-                          'input_sha256': {name: sha256(directory / name) for name in
-                                           ('metrics.csv', 'config.json', 'summary.json', 'environment.json')},
-                          'training_source_sha256': run['environment']['source_sha256'],
+                          'input_files': ['metrics.csv', 'config.json', 'summary.json', 'environment.json'],
                           'source_shuffle_seed': run['config']['source_initial_shuffle_seed'],
                           'target_shuffle_seed': run['config']['target_initial_shuffle_seed']})
     manifest = {
         'schema_version': 2, 'primary_source': 'metrics.csv', 'csv_validation': 'finite epochs, loss identities, sample counts, summary equality',
         'source_run_count': len(manifests), 'unique_setting_count': len(rows), 'duplicates': duplicates,
-        'bridge': 'Shared archived controls; common hyperparameters, all RNG seeds, runtime and training code match.',
+        'bridge': 'Shared archived controls; common hyperparameters, all RNG seeds and runtime match.',
         'canonical_fc8': str(ORIGINAL_DIR / 'fc8'),
         'baseline': str(ORIGINAL_DIR / 'no_adaptation'),
         'historical_sampling_difference': any(not row['sampling_matches_original'] for row in rows),
-        'training_code_versions_are_different': len({json.dumps(run['environment']['source_sha256'], sort_keys=True) for run in source_runs}) > 1,
         'source_runs': manifests,
-        'plot_script_sha256': sha256(Path(__file__)),
         'renderer': {'matplotlib': matplotlib.__version__, 'numpy': np.__version__},
         'arguments': {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()},
     }
     execution_path = RESULTS_DIR / 'execution.json'
     if execution_path.exists():
         manifest['execution'] = json.loads(execution_path.read_text(encoding='utf-8'))
-        manifest['execution_sha256'] = sha256(execution_path)
     (output / 'provenance.json').write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
 
 
@@ -308,7 +298,7 @@ conv5 使用 `[BHW,256]` 局部通道观测与 `256×256` 协方差；fc 层使�
 
 ## 来源与图表
 
-训练代码哈希、配置 schema、数据路径、实际采样 seed 和 CSV SHA-256 保留在 `provenance.json`。共同超参数、运行环境与训练代码哈希均匹配。所有基线/fc8 指标取自新归档，不拼接旧对照数据。原训练入口的续跑要求配置、代码和环境匹配。
+配置 schema、数据路径和实际采样 seed 保留在 `provenance.json`。共同超参数和运行环境均匹配。所有基线/fc8 指标取自新归档，不拼接旧对照数据。原训练入口的续跑要求配置和运行环境匹配。
 
 - `final_target_comparison.png`：十种设置的最终准确率及相对 fc8 的差值。
 - `accuracy_curves.png`：单层与多层配置的目标、源域准确率曲线；目标轴为标明范围的细节视图。

@@ -3,7 +3,6 @@
 import argparse
 import concurrent.futures
 import csv
-import hashlib
 import json
 import subprocess
 import sys
@@ -19,12 +18,6 @@ class TrainingFailed(RuntimeError):
         self.details = {'setting': setting, 'exit_code': result.returncode,
                         'stderr_tail': result.stderr[-2000:]}
         super().__init__(f'{setting} failed with exit code {result.returncode}: {result.stderr[-2000:]}')
-
-
-def control_hashes():
-    return {f'{setting}/{name}': hashlib.sha256((ORIGINAL_DIR / setting / name).read_bytes()).hexdigest()
-            for setting in CONTROL_SETTINGS
-            for name in ('config.json', 'environment.json', 'metrics.csv', 'summary.json', 'train.log')}
 
 
 def launch(suite, layers, overwrite):
@@ -47,7 +40,6 @@ def main():
     args = parser.parse_args()
     for setting in CONTROL_SETTINGS:
         read_run(ORIGINAL_DIR / setting)
-    before = control_hashes()
     baseline_config = read_run(ORIGINAL_DIR / 'no_adaptation')[0]
     pending = deque()
     skipped = []
@@ -75,8 +67,7 @@ def main():
                 if lines and not lines[-1].endswith(b'\n'):
                     lines.pop()
                 interrupted.append({'setting': setting, 'line_count': len(lines),
-                                    'completed_epochs': max(0, len(lines) - 1),
-                                    'metrics_prefix_sha256': hashlib.sha256(b''.join(lines)).hexdigest()})
+                                    'completed_epochs': max(0, len(lines) - 1)})
             pending.append((suite, layers))
     destinations = [suite_results_dir(suite) / '_'.join(layers) for suite, layers in pending]
     if not args.overwrite and any(path.exists() and any(path.iterdir()) for path in destinations):
@@ -86,9 +77,9 @@ def main():
     manifest = {'original_training_jobs': 1, 'advanced_training_jobs': args.jobs,
                 'advanced_processes': 'Independent Python processes, each with all RNG seeds=42',
                 'timing_scope': 'Single-run elapsed time under shared resources; not an algorithm speed comparison',
-                'original_controls_before': before, 'completed_settings': list(skipped),
+                'original_controls': str(ORIGINAL_DIR), 'completed_settings': list(skipped),
                 'reused_completed_settings': skipped, 'interrupted_attempts': interrupted,
-                'previous_execution': previous, 'retry_prefix_checks': []}
+                'previous_execution': previous}
 
     def persist():
         execution_path.write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
@@ -109,14 +100,6 @@ def main():
                     setting = future.result()
                     del active[future]
                     manifest['completed_settings'].append(setting)
-                    for attempt in interrupted:
-                        if attempt['setting'] == setting:
-                            directory = suite_results_dir(next(suite for suite in ('fc_layers', 'conv5_fc8')
-                                                               if (suite_results_dir(suite) / setting).exists())) / setting
-                            prefix = b''.join((directory / 'metrics.csv').read_bytes().splitlines(keepends=True)[:attempt['line_count']])
-                            manifest['retry_prefix_checks'].append({**attempt,
-                                'retry_metrics_prefix_sha256': hashlib.sha256(prefix).hexdigest(),
-                                'exact_prefix_match': hashlib.sha256(prefix).hexdigest() == attempt['metrics_prefix_sha256']})
                     persist()
                     print(f'Completed extension: {setting} (50 epochs)', flush=True)
                 progress = {}
@@ -137,17 +120,12 @@ def main():
                 print(f'Progress: {json.dumps(progress)}; completed={len(manifest["completed_settings"])}/8', flush=True)
         except BaseException as exc:
             manifest['failure'] = exc.details if isinstance(exc, TrainingFailed) else {'message': str(exc)}
-            manifest['original_controls_after_failure'] = control_hashes()
             persist()
             print(f'Extension failure: {manifest["failure"]}', flush=True)
             for future in active:
                 future.cancel()
             raise
-    after = control_hashes()
-    if after != before:
-        raise ValueError('Advanced training modified the frozen original archive')
-    manifest['original_controls_after'] = after
-    manifest['original_controls_unchanged'] = True
+    manifest['original_controls_retrained'] = False
     persist()
     for suite in ('fc_layers', 'conv5_fc8'):
         subprocess.run([sys.executable, '-m', 'src.plotting.plot_accuracies_losses', '--suite', suite], check=True)

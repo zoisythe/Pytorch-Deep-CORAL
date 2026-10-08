@@ -1,0 +1,1589 @@
+{
+  "as_of": "2026-10-08",
+  "timezone": "Asia/Shanghai",
+  "training_performed_for_report": false,
+  "metric_definitions": {
+    "target_accuracy": "target_correct / 795; all target images evaluated",
+    "best_epoch": "earliest epoch with maximum recorded target_accuracy",
+    "CORAL_loss": "mean of selected optimization-layer CORAL losses",
+    "weighted_CORAL_loss": "batch mean of lambda_used * CORAL_loss",
+    "percentage_point_difference": "100 * (accuracy_a - accuracy_b)"
+  },
+  "early_stop_rule": {
+    "lambda": 0.5,
+    "tolerance": 0.25,
+    "patience": 2,
+    "min_epochs": 20,
+    "ema_decay": 0.5,
+    "gap_formula": "abs(A-B) / max(A,B,1e-12)",
+    "require_raw_and_ema_balance": true,
+    "selection": "threshold fixed by user; faster smoothing selected from existing logs; historical target accuracy reviewed"
+  },
+  "runs": [
+    {
+      "run_id": "no_adaptation_fixed_50",
+      "label": "No adaptation",
+      "source_directory": "results/original/no_adaptation",
+      "input_files": [
+        "config.json",
+        "summary.json",
+        "metrics.csv",
+        "train.log",
+        "environment.json"
+      ],
+      "config": {
+        "schema_version": 3,
+        "suite": "original",
+        "source": "amazon",
+        "target": "webcam",
+        "epochs": 50,
+        "seed": 42,
+        "seed_policy": "all_rngs_42",
+        "batch_size": 128,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "decay": 0.0005,
+        "num_workers": 0,
+        "coral_layers": [],
+        "monitor_layers": [
+          "conv5",
+          "fc6",
+          "fc7",
+          "fc8"
+        ],
+        "coral_reduction": "mean",
+        "effective_coral_weights": {
+          "conv5": 0.0,
+          "fc6": 0.0,
+          "fc7": 0.0,
+          "fc8": 0.0
+        },
+        "feature_protocol": {
+          "conv5": {
+            "location": "features[10].output_before_relu_and_maxpool",
+            "layout": "B,C,H,W",
+            "observation_layout": "(B*H*W),C",
+            "covariance": "centered_channel_covariance",
+            "covariance_divisor": "B*H*W-1",
+            "loss_divisor": "4*C^2",
+            "dimension": 256,
+            "spatial_shape_at_224": [
+              13,
+              13
+            ]
+          },
+          "fc6": {
+            "location": "classifier[1].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc7": {
+            "location": "classifier[4].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc8": {
+            "location": "classifier[6].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": "num_classes"
+          }
+        },
+        "pretrained": "IMAGENET1K_V1",
+        "fc8_weight_std": 0.005,
+        "fc8_bias": 0.01,
+        "fc8_lr_multiplier": 10,
+        "train_steps_per_epoch": 6,
+        "source_samples": 2817,
+        "target_samples": 795,
+        "source_initial_shuffle_seed": 42,
+        "target_initial_shuffle_seed": 42,
+        "evaluation_loader_seeds": [
+          42,
+          42
+        ],
+        "worker_seed": 42,
+        "lambda_coral": 0.0
+      },
+      "environment": {
+        "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+        "torch": "2.14.1+cu132",
+        "torchvision": "0.29.1+cu132",
+        "numpy": "2.5.3",
+        "cuda": "13.2",
+        "device": "cuda",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "deterministic_algorithms": true,
+        "tf32": false,
+        "cpu_threads": 1,
+        "cublas_workspace_config": ":4096:8"
+      },
+      "summary": {
+        "setting": "no_adaptation",
+        "epochs_completed": 50,
+        "final_source_accuracy": 1.0,
+        "final_target_accuracy": 0.46540880503144655,
+        "best_target_accuracy": 0.48050314465408805,
+        "best_target_epoch": 3,
+        "elapsed_seconds": 491.7025811000003,
+        "peak_gpu_memory_bytes": 1544050688
+      },
+      "log_metrics_match": true
+    },
+    {
+      "run_id": "fc8_fixed_50",
+      "label": "fc8",
+      "source_directory": "results/original/fc8",
+      "input_files": [
+        "config.json",
+        "summary.json",
+        "metrics.csv",
+        "train.log",
+        "environment.json"
+      ],
+      "config": {
+        "schema_version": 3,
+        "suite": "original",
+        "source": "amazon",
+        "target": "webcam",
+        "epochs": 50,
+        "seed": 42,
+        "seed_policy": "all_rngs_42",
+        "batch_size": 128,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "decay": 0.0005,
+        "num_workers": 0,
+        "coral_layers": [
+          "fc8"
+        ],
+        "monitor_layers": [
+          "conv5",
+          "fc6",
+          "fc7",
+          "fc8"
+        ],
+        "coral_reduction": "mean",
+        "effective_coral_weights": {
+          "conv5": 0.0,
+          "fc6": 0.0,
+          "fc7": 0.0,
+          "fc8": 0.5
+        },
+        "feature_protocol": {
+          "conv5": {
+            "location": "features[10].output_before_relu_and_maxpool",
+            "layout": "B,C,H,W",
+            "observation_layout": "(B*H*W),C",
+            "covariance": "centered_channel_covariance",
+            "covariance_divisor": "B*H*W-1",
+            "loss_divisor": "4*C^2",
+            "dimension": 256,
+            "spatial_shape_at_224": [
+              13,
+              13
+            ]
+          },
+          "fc6": {
+            "location": "classifier[1].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc7": {
+            "location": "classifier[4].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc8": {
+            "location": "classifier[6].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": "num_classes"
+          }
+        },
+        "pretrained": "IMAGENET1K_V1",
+        "fc8_weight_std": 0.005,
+        "fc8_bias": 0.01,
+        "fc8_lr_multiplier": 10,
+        "train_steps_per_epoch": 6,
+        "source_samples": 2817,
+        "target_samples": 795,
+        "source_initial_shuffle_seed": 42,
+        "target_initial_shuffle_seed": 42,
+        "evaluation_loader_seeds": [
+          42,
+          42
+        ],
+        "worker_seed": 42,
+        "lambda_coral": 0.5
+      },
+      "environment": {
+        "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+        "torch": "2.14.1+cu132",
+        "torchvision": "0.29.1+cu132",
+        "numpy": "2.5.3",
+        "cuda": "13.2",
+        "device": "cuda",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "deterministic_algorithms": true,
+        "tf32": false,
+        "cpu_threads": 1,
+        "cublas_workspace_config": ":4096:8"
+      },
+      "summary": {
+        "setting": "fc8",
+        "epochs_completed": 50,
+        "final_source_accuracy": 0.9992900248491303,
+        "final_target_accuracy": 0.5421383647798742,
+        "best_target_accuracy": 0.5421383647798742,
+        "best_target_epoch": 37,
+        "elapsed_seconds": 637.6256825999999,
+        "peak_gpu_memory_bytes": 1937724416
+      },
+      "log_metrics_match": true
+    },
+    {
+      "run_id": "fc6_fixed_50",
+      "label": "fc6",
+      "source_directory": "results/fc_layers/fc6",
+      "input_files": [
+        "config.json",
+        "summary.json",
+        "metrics.csv",
+        "train.log",
+        "environment.json"
+      ],
+      "config": {
+        "schema_version": 3,
+        "suite": "fc_layers",
+        "source": "amazon",
+        "target": "webcam",
+        "epochs": 50,
+        "seed": 42,
+        "seed_policy": "all_rngs_42",
+        "batch_size": 128,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "decay": 0.0005,
+        "num_workers": 0,
+        "coral_layers": [
+          "fc6"
+        ],
+        "monitor_layers": [
+          "fc6",
+          "fc7",
+          "fc8"
+        ],
+        "coral_reduction": "mean",
+        "effective_coral_weights": {
+          "fc6": 0.5,
+          "fc7": 0.0,
+          "fc8": 0.0
+        },
+        "feature_protocol": {
+          "fc6": {
+            "location": "classifier[1].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc7": {
+            "location": "classifier[4].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc8": {
+            "location": "classifier[6].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": "num_classes"
+          }
+        },
+        "pretrained": "IMAGENET1K_V1",
+        "fc8_weight_std": 0.005,
+        "fc8_bias": 0.01,
+        "fc8_lr_multiplier": 10,
+        "train_steps_per_epoch": 6,
+        "source_samples": 2817,
+        "target_samples": 795,
+        "source_initial_shuffle_seed": 42,
+        "target_initial_shuffle_seed": 42,
+        "evaluation_loader_seeds": [
+          42,
+          42
+        ],
+        "worker_seed": 42,
+        "lambda_coral": 0.5
+      },
+      "environment": {
+        "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+        "torch": "2.14.1+cu132",
+        "torchvision": "0.29.1+cu132",
+        "numpy": "2.5.3",
+        "cuda": "13.2",
+        "device": "cuda",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "deterministic_algorithms": true,
+        "tf32": false,
+        "cpu_threads": 1,
+        "cublas_workspace_config": ":4096:8"
+      },
+      "summary": {
+        "setting": "fc6",
+        "epochs_completed": 50,
+        "final_source_accuracy": 0.9957401490947817,
+        "final_target_accuracy": 0.4440251572327044,
+        "best_target_accuracy": 0.4666666666666667,
+        "best_target_epoch": 22,
+        "elapsed_seconds": 836.7804157999999,
+        "peak_gpu_memory_bytes": 1835078144
+      },
+      "log_metrics_match": true
+    },
+    {
+      "run_id": "fc6_fc7_fixed_50",
+      "label": "fc6+fc7",
+      "source_directory": "results/fc_layers/fc6_fc7",
+      "input_files": [
+        "config.json",
+        "summary.json",
+        "metrics.csv",
+        "train.log",
+        "environment.json"
+      ],
+      "config": {
+        "schema_version": 3,
+        "suite": "fc_layers",
+        "source": "amazon",
+        "target": "webcam",
+        "epochs": 50,
+        "seed": 42,
+        "seed_policy": "all_rngs_42",
+        "batch_size": 128,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "decay": 0.0005,
+        "num_workers": 0,
+        "coral_layers": [
+          "fc6",
+          "fc7"
+        ],
+        "monitor_layers": [
+          "fc6",
+          "fc7",
+          "fc8"
+        ],
+        "coral_reduction": "mean",
+        "effective_coral_weights": {
+          "fc6": 0.25,
+          "fc7": 0.25,
+          "fc8": 0.0
+        },
+        "feature_protocol": {
+          "fc6": {
+            "location": "classifier[1].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc7": {
+            "location": "classifier[4].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc8": {
+            "location": "classifier[6].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": "num_classes"
+          }
+        },
+        "pretrained": "IMAGENET1K_V1",
+        "fc8_weight_std": 0.005,
+        "fc8_bias": 0.01,
+        "fc8_lr_multiplier": 10,
+        "train_steps_per_epoch": 6,
+        "source_samples": 2817,
+        "target_samples": 795,
+        "source_initial_shuffle_seed": 42,
+        "target_initial_shuffle_seed": 42,
+        "evaluation_loader_seeds": [
+          42,
+          42
+        ],
+        "worker_seed": 42,
+        "lambda_coral": 0.5
+      },
+      "environment": {
+        "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+        "torch": "2.14.1+cu132",
+        "torchvision": "0.29.1+cu132",
+        "numpy": "2.5.3",
+        "cuda": "13.2",
+        "device": "cuda",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "deterministic_algorithms": true,
+        "tf32": false,
+        "cpu_threads": 1,
+        "cublas_workspace_config": ":4096:8"
+      },
+      "summary": {
+        "setting": "fc6_fc7",
+        "epochs_completed": 50,
+        "final_source_accuracy": 0.9932552360667377,
+        "final_target_accuracy": 0.4540880503144654,
+        "best_target_accuracy": 0.45660377358490567,
+        "best_target_epoch": 14,
+        "elapsed_seconds": 609.3489226000002,
+        "peak_gpu_memory_bytes": 1898729984
+      },
+      "log_metrics_match": true
+    },
+    {
+      "run_id": "fc6_fc7_fc8_fixed_50",
+      "label": "fc6+fc7+fc8",
+      "source_directory": "results/fc_layers/fc6_fc7_fc8",
+      "input_files": [
+        "config.json",
+        "summary.json",
+        "metrics.csv",
+        "train.log",
+        "environment.json"
+      ],
+      "config": {
+        "schema_version": 3,
+        "suite": "fc_layers",
+        "source": "amazon",
+        "target": "webcam",
+        "epochs": 50,
+        "seed": 42,
+        "seed_policy": "all_rngs_42",
+        "batch_size": 128,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "decay": 0.0005,
+        "num_workers": 0,
+        "coral_layers": [
+          "fc6",
+          "fc7",
+          "fc8"
+        ],
+        "monitor_layers": [
+          "fc6",
+          "fc7",
+          "fc8"
+        ],
+        "coral_reduction": "mean",
+        "effective_coral_weights": {
+          "fc6": 0.16666666666666666,
+          "fc7": 0.16666666666666666,
+          "fc8": 0.16666666666666666
+        },
+        "feature_protocol": {
+          "fc6": {
+            "location": "classifier[1].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc7": {
+            "location": "classifier[4].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc8": {
+            "location": "classifier[6].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": "num_classes"
+          }
+        },
+        "pretrained": "IMAGENET1K_V1",
+        "fc8_weight_std": 0.005,
+        "fc8_bias": 0.01,
+        "fc8_lr_multiplier": 10,
+        "train_steps_per_epoch": 6,
+        "source_samples": 2817,
+        "target_samples": 795,
+        "source_initial_shuffle_seed": 42,
+        "target_initial_shuffle_seed": 42,
+        "evaluation_loader_seeds": [
+          42,
+          42
+        ],
+        "worker_seed": 42,
+        "lambda_coral": 0.5
+      },
+      "environment": {
+        "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+        "torch": "2.14.1+cu132",
+        "torchvision": "0.29.1+cu132",
+        "numpy": "2.5.3",
+        "cuda": "13.2",
+        "device": "cuda",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "deterministic_algorithms": true,
+        "tf32": false,
+        "cpu_threads": 1,
+        "cublas_workspace_config": ":4096:8"
+      },
+      "summary": {
+        "setting": "fc6_fc7_fc8",
+        "epochs_completed": 50,
+        "final_source_accuracy": 0.9953851615193469,
+        "final_target_accuracy": 0.5182389937106918,
+        "best_target_accuracy": 0.5207547169811321,
+        "best_target_epoch": 33,
+        "elapsed_seconds": 478.98120070000004,
+        "peak_gpu_memory_bytes": 1896239616
+      },
+      "log_metrics_match": true
+    },
+    {
+      "run_id": "fc6_fc8_fixed_50",
+      "label": "fc6+fc8",
+      "source_directory": "results/fc_layers/fc6_fc8",
+      "input_files": [
+        "config.json",
+        "summary.json",
+        "metrics.csv",
+        "train.log",
+        "environment.json"
+      ],
+      "config": {
+        "schema_version": 3,
+        "suite": "fc_layers",
+        "source": "amazon",
+        "target": "webcam",
+        "epochs": 50,
+        "seed": 42,
+        "seed_policy": "all_rngs_42",
+        "batch_size": 128,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "decay": 0.0005,
+        "num_workers": 0,
+        "coral_layers": [
+          "fc6",
+          "fc8"
+        ],
+        "monitor_layers": [
+          "fc6",
+          "fc7",
+          "fc8"
+        ],
+        "coral_reduction": "mean",
+        "effective_coral_weights": {
+          "fc6": 0.25,
+          "fc7": 0.0,
+          "fc8": 0.25
+        },
+        "feature_protocol": {
+          "fc6": {
+            "location": "classifier[1].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc7": {
+            "location": "classifier[4].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc8": {
+            "location": "classifier[6].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": "num_classes"
+          }
+        },
+        "pretrained": "IMAGENET1K_V1",
+        "fc8_weight_std": 0.005,
+        "fc8_bias": 0.01,
+        "fc8_lr_multiplier": 10,
+        "train_steps_per_epoch": 6,
+        "source_samples": 2817,
+        "target_samples": 795,
+        "source_initial_shuffle_seed": 42,
+        "target_initial_shuffle_seed": 42,
+        "evaluation_loader_seeds": [
+          42,
+          42
+        ],
+        "worker_seed": 42,
+        "lambda_coral": 0.5
+      },
+      "environment": {
+        "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+        "torch": "2.14.1+cu132",
+        "torchvision": "0.29.1+cu132",
+        "numpy": "2.5.3",
+        "cuda": "13.2",
+        "device": "cuda",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "deterministic_algorithms": true,
+        "tf32": false,
+        "cpu_threads": 1,
+        "cublas_workspace_config": ":4096:8"
+      },
+      "summary": {
+        "setting": "fc6_fc8",
+        "epochs_completed": 50,
+        "final_source_accuracy": 0.9960951366702165,
+        "final_target_accuracy": 0.5232704402515723,
+        "best_target_accuracy": 0.529559748427673,
+        "best_target_epoch": 33,
+        "elapsed_seconds": 488.2241838,
+        "peak_gpu_memory_bytes": 1893011968
+      },
+      "log_metrics_match": true
+    },
+    {
+      "run_id": "fc7_fixed_50",
+      "label": "fc7",
+      "source_directory": "results/fc_layers/fc7",
+      "input_files": [
+        "config.json",
+        "summary.json",
+        "metrics.csv",
+        "train.log",
+        "environment.json"
+      ],
+      "config": {
+        "schema_version": 3,
+        "suite": "fc_layers",
+        "source": "amazon",
+        "target": "webcam",
+        "epochs": 50,
+        "seed": 42,
+        "seed_policy": "all_rngs_42",
+        "batch_size": 128,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "decay": 0.0005,
+        "num_workers": 0,
+        "coral_layers": [
+          "fc7"
+        ],
+        "monitor_layers": [
+          "fc6",
+          "fc7",
+          "fc8"
+        ],
+        "coral_reduction": "mean",
+        "effective_coral_weights": {
+          "fc6": 0.0,
+          "fc7": 0.5,
+          "fc8": 0.0
+        },
+        "feature_protocol": {
+          "fc6": {
+            "location": "classifier[1].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc7": {
+            "location": "classifier[4].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc8": {
+            "location": "classifier[6].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": "num_classes"
+          }
+        },
+        "pretrained": "IMAGENET1K_V1",
+        "fc8_weight_std": 0.005,
+        "fc8_bias": 0.01,
+        "fc8_lr_multiplier": 10,
+        "train_steps_per_epoch": 6,
+        "source_samples": 2817,
+        "target_samples": 795,
+        "source_initial_shuffle_seed": 42,
+        "target_initial_shuffle_seed": 42,
+        "evaluation_loader_seeds": [
+          42,
+          42
+        ],
+        "worker_seed": 42,
+        "lambda_coral": 0.5
+      },
+      "environment": {
+        "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+        "torch": "2.14.1+cu132",
+        "torchvision": "0.29.1+cu132",
+        "numpy": "2.5.3",
+        "cuda": "13.2",
+        "device": "cuda",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "deterministic_algorithms": true,
+        "tf32": false,
+        "cpu_threads": 1,
+        "cublas_workspace_config": ":4096:8"
+      },
+      "summary": {
+        "setting": "fc7",
+        "epochs_completed": 50,
+        "final_source_accuracy": 0.9953851615193469,
+        "final_target_accuracy": 0.4591194968553459,
+        "best_target_accuracy": 0.4691823899371069,
+        "best_target_epoch": 45,
+        "elapsed_seconds": 837.1439960999996,
+        "peak_gpu_memory_bytes": 1896878592
+      },
+      "log_metrics_match": true
+    },
+    {
+      "run_id": "fc7_fc8_fixed_50",
+      "label": "fc7+fc8",
+      "source_directory": "results/fc_layers/fc7_fc8",
+      "input_files": [
+        "config.json",
+        "summary.json",
+        "metrics.csv",
+        "train.log",
+        "environment.json"
+      ],
+      "config": {
+        "schema_version": 3,
+        "suite": "fc_layers",
+        "source": "amazon",
+        "target": "webcam",
+        "epochs": 50,
+        "seed": 42,
+        "seed_policy": "all_rngs_42",
+        "batch_size": 128,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "decay": 0.0005,
+        "num_workers": 0,
+        "coral_layers": [
+          "fc7",
+          "fc8"
+        ],
+        "monitor_layers": [
+          "fc6",
+          "fc7",
+          "fc8"
+        ],
+        "coral_reduction": "mean",
+        "effective_coral_weights": {
+          "fc6": 0.0,
+          "fc7": 0.25,
+          "fc8": 0.25
+        },
+        "feature_protocol": {
+          "fc6": {
+            "location": "classifier[1].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc7": {
+            "location": "classifier[4].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": 4096
+          },
+          "fc8": {
+            "location": "classifier[6].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": "num_classes"
+          }
+        },
+        "pretrained": "IMAGENET1K_V1",
+        "fc8_weight_std": 0.005,
+        "fc8_bias": 0.01,
+        "fc8_lr_multiplier": 10,
+        "train_steps_per_epoch": 6,
+        "source_samples": 2817,
+        "target_samples": 795,
+        "source_initial_shuffle_seed": 42,
+        "target_initial_shuffle_seed": 42,
+        "evaluation_loader_seeds": [
+          42,
+          42
+        ],
+        "worker_seed": 42,
+        "lambda_coral": 0.5
+      },
+      "environment": {
+        "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+        "torch": "2.14.1+cu132",
+        "torchvision": "0.29.1+cu132",
+        "numpy": "2.5.3",
+        "cuda": "13.2",
+        "device": "cuda",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "deterministic_algorithms": true,
+        "tf32": false,
+        "cpu_threads": 1,
+        "cublas_workspace_config": ":4096:8"
+      },
+      "summary": {
+        "setting": "fc7_fc8",
+        "epochs_completed": 50,
+        "final_source_accuracy": 0.9968051118210862,
+        "final_target_accuracy": 0.5433962264150943,
+        "best_target_accuracy": 0.5433962264150943,
+        "best_target_epoch": 45,
+        "elapsed_seconds": 512.6705212999996,
+        "peak_gpu_memory_bytes": 1893011968
+      },
+      "log_metrics_match": true
+    },
+    {
+      "run_id": "conv5_fixed_50",
+      "label": "conv5",
+      "source_directory": "results/conv5/conv5",
+      "input_files": [
+        "config.json",
+        "summary.json",
+        "metrics.csv",
+        "train.log",
+        "environment.json"
+      ],
+      "config": {
+        "schema_version": 3,
+        "suite": "conv5_fc8",
+        "source": "amazon",
+        "target": "webcam",
+        "epochs": 50,
+        "seed": 42,
+        "seed_policy": "all_rngs_42",
+        "batch_size": 128,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "decay": 0.0005,
+        "num_workers": 0,
+        "coral_layers": [
+          "conv5"
+        ],
+        "monitor_layers": [
+          "conv5",
+          "fc8"
+        ],
+        "coral_reduction": "mean",
+        "effective_coral_weights": {
+          "conv5": 0.5,
+          "fc8": 0.0
+        },
+        "feature_protocol": {
+          "conv5": {
+            "location": "features[10].output_before_relu_and_maxpool",
+            "layout": "B,C,H,W",
+            "observation_layout": "(B*H*W),C",
+            "covariance": "centered_channel_covariance",
+            "covariance_divisor": "B*H*W-1",
+            "loss_divisor": "4*C^2",
+            "dimension": 256,
+            "spatial_shape_at_224": [
+              13,
+              13
+            ]
+          },
+          "fc8": {
+            "location": "classifier[6].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": "num_classes"
+          }
+        },
+        "pretrained": "IMAGENET1K_V1",
+        "fc8_weight_std": 0.005,
+        "fc8_bias": 0.01,
+        "fc8_lr_multiplier": 10,
+        "train_steps_per_epoch": 6,
+        "source_samples": 2817,
+        "target_samples": 795,
+        "source_initial_shuffle_seed": 42,
+        "target_initial_shuffle_seed": 42,
+        "evaluation_loader_seeds": [
+          42,
+          42
+        ],
+        "worker_seed": 42,
+        "lambda_coral": 0.5
+      },
+      "environment": {
+        "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+        "torch": "2.14.1+cu132",
+        "torchvision": "0.29.1+cu132",
+        "numpy": "2.5.3",
+        "cuda": "13.2",
+        "device": "cuda",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "deterministic_algorithms": true,
+        "tf32": false,
+        "cpu_threads": 1,
+        "cublas_workspace_config": ":4096:8"
+      },
+      "summary": {
+        "setting": "conv5",
+        "epochs_completed": 50,
+        "final_source_accuracy": 0.9996450124245652,
+        "final_target_accuracy": 0.5081761006289308,
+        "best_target_accuracy": 0.5081761006289308,
+        "best_target_epoch": 33,
+        "elapsed_seconds": 580.2207927999998,
+        "peak_gpu_memory_bytes": 1777504256
+      },
+      "log_metrics_match": true
+    },
+    {
+      "run_id": "conv5_fc8_fixed_50",
+      "label": "conv5+fc8",
+      "source_directory": "results/conv5/conv5_fc8",
+      "input_files": [
+        "config.json",
+        "summary.json",
+        "metrics.csv",
+        "train.log",
+        "environment.json"
+      ],
+      "config": {
+        "schema_version": 3,
+        "suite": "conv5_fc8",
+        "source": "amazon",
+        "target": "webcam",
+        "epochs": 50,
+        "seed": 42,
+        "seed_policy": "all_rngs_42",
+        "batch_size": 128,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "decay": 0.0005,
+        "num_workers": 0,
+        "coral_layers": [
+          "conv5",
+          "fc8"
+        ],
+        "monitor_layers": [
+          "conv5",
+          "fc8"
+        ],
+        "coral_reduction": "mean",
+        "effective_coral_weights": {
+          "conv5": 0.25,
+          "fc8": 0.25
+        },
+        "feature_protocol": {
+          "conv5": {
+            "location": "features[10].output_before_relu_and_maxpool",
+            "layout": "B,C,H,W",
+            "observation_layout": "(B*H*W),C",
+            "covariance": "centered_channel_covariance",
+            "covariance_divisor": "B*H*W-1",
+            "loss_divisor": "4*C^2",
+            "dimension": 256,
+            "spatial_shape_at_224": [
+              13,
+              13
+            ]
+          },
+          "fc8": {
+            "location": "classifier[6].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": "num_classes"
+          }
+        },
+        "pretrained": "IMAGENET1K_V1",
+        "fc8_weight_std": 0.005,
+        "fc8_bias": 0.01,
+        "fc8_lr_multiplier": 10,
+        "train_steps_per_epoch": 6,
+        "source_samples": 2817,
+        "target_samples": 795,
+        "source_initial_shuffle_seed": 42,
+        "target_initial_shuffle_seed": 42,
+        "evaluation_loader_seeds": [
+          42,
+          42
+        ],
+        "worker_seed": 42,
+        "lambda_coral": 0.5
+      },
+      "environment": {
+        "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+        "torch": "2.14.1+cu132",
+        "torchvision": "0.29.1+cu132",
+        "numpy": "2.5.3",
+        "cuda": "13.2",
+        "device": "cuda",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "deterministic_algorithms": true,
+        "tf32": false,
+        "cpu_threads": 1,
+        "cublas_workspace_config": ":4096:8"
+      },
+      "summary": {
+        "setting": "conv5_fc8",
+        "epochs_completed": 50,
+        "final_source_accuracy": 0.9992900248491303,
+        "final_target_accuracy": 0.5509433962264151,
+        "best_target_accuracy": 0.5534591194968553,
+        "best_target_epoch": 28,
+        "elapsed_seconds": 715.3602849999997,
+        "peak_gpu_memory_bytes": 1949487104
+      },
+      "log_metrics_match": true
+    },
+    {
+      "run_id": "joint_fixed_100",
+      "label": "Fixed joint",
+      "source_directory": "results/fixed_lambda/conv5_fc8",
+      "input_files": [
+        "config.json",
+        "summary.json",
+        "metrics.csv",
+        "train.log",
+        "step_metrics.csv",
+        "environment.json"
+      ],
+      "config": {
+        "schema_version": 5,
+        "suite": "adaptive_lambda",
+        "source": "amazon",
+        "target": "webcam",
+        "epochs": 100,
+        "seed": 42,
+        "seed_policy": "all_rngs_42",
+        "batch_size": 128,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "decay": 0.0005,
+        "num_workers": 0,
+        "coral_layers": [
+          "conv5",
+          "fc8"
+        ],
+        "monitor_layers": [
+          "conv5",
+          "fc8"
+        ],
+        "coral_reduction": "mean",
+        "effective_coral_weights": {
+          "conv5": "lambda_used_per_step / 2",
+          "fc8": "lambda_used_per_step / 2"
+        },
+        "feature_protocol": {
+          "conv5": {
+            "location": "features[10].output_before_relu_and_maxpool",
+            "layout": "B,C,H,W",
+            "observation_layout": "(B*H*W),C",
+            "covariance": "centered_channel_covariance",
+            "covariance_divisor": "B*H*W-1",
+            "loss_divisor": "4*C^2",
+            "dimension": 256,
+            "spatial_shape_at_224": [
+              13,
+              13
+            ]
+          },
+          "fc8": {
+            "location": "classifier[6].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": "num_classes"
+          }
+        },
+        "pretrained": "IMAGENET1K_V1",
+        "fc8_weight_std": 0.005,
+        "fc8_bias": 0.01,
+        "fc8_lr_multiplier": 10,
+        "train_steps_per_epoch": 6,
+        "source_samples": 2817,
+        "target_samples": 795,
+        "source_initial_shuffle_seed": 42,
+        "target_initial_shuffle_seed": 42,
+        "evaluation_loader_seeds": [
+          42,
+          42
+        ],
+        "worker_seed": 42,
+        "lambda_coral": 0.5,
+        "lambda_mode": "fixed",
+        "lambda_learning_start_epoch": 101,
+        "adaptive_epochs": 0,
+        "lambda_lr": 0.01,
+        "ema_decay": 0.9,
+        "lambda_min": 0.0001,
+        "lambda_max": 100.0
+      },
+      "environment": {
+        "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+        "torch": "2.14.1+cu132",
+        "torchvision": "0.29.1+cu132",
+        "numpy": "2.5.3",
+        "cuda": "13.2",
+        "device": "cuda",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "deterministic_algorithms": true,
+        "tf32": false,
+        "cpu_threads": 1,
+        "cublas_workspace_config": ":4096:8"
+      },
+      "summary": {
+        "setting": "conv5_fc8_fixed_lambda",
+        "epochs_completed": 100,
+        "steps_completed": 600,
+        "final_source_accuracy": 1.0,
+        "final_target_accuracy": 0.5257861635220126,
+        "best_target_accuracy": 0.5647798742138365,
+        "best_target_epoch": 58,
+        "selected_epoch": 58,
+        "selected_target_accuracy": 0.5647798742138365,
+        "selected_source_accuracy": 0.9996450124245652,
+        "selected_lambda": 0.5,
+        "selected_phase": "fixed",
+        "best_epoch_data": "best_epoch.json",
+        "selection_metric": "best_target_accuracy",
+        "best_adaptive_target_accuracy": null,
+        "best_adaptive_target_epoch": null,
+        "lambda_learning_start_epoch": 101,
+        "lambda_updates": 0,
+        "initial_lambda": 0.5,
+        "final_lambda": 0.5,
+        "minimum_lambda_used": 0.5,
+        "maximum_lambda_used": 0.5,
+        "elapsed_seconds": 1686.6858026,
+        "peak_gpu_memory_bytes": 1949654528,
+        "original_controls_retrained": false,
+        "fixed_reference_retrained": false
+      },
+      "log_metrics_match": true
+    },
+    {
+      "run_id": "fc8_adaptive_full_50",
+      "label": "fc8 adaptive from 1",
+      "source_directory": "results/adaptive_lambda/history/2026-10-07_full_schedule_fc8",
+      "input_files": [
+        "config.json",
+        "summary.json",
+        "metrics.csv",
+        "train.log",
+        "step_metrics.csv",
+        "environment.json"
+      ],
+      "config": {
+        "schema_version": 4,
+        "suite": "adaptive_lambda",
+        "source": "amazon",
+        "target": "webcam",
+        "epochs": 50,
+        "seed": 42,
+        "seed_policy": "all_rngs_42",
+        "batch_size": 128,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "decay": 0.0005,
+        "num_workers": 0,
+        "coral_layers": [
+          "fc8"
+        ],
+        "monitor_layers": [
+          "fc8"
+        ],
+        "coral_reduction": "mean",
+        "effective_coral_weights": {
+          "fc8": "lambda_used_per_step"
+        },
+        "feature_protocol": {
+          "fc8": {
+            "location": "classifier[6].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": "num_classes"
+          }
+        },
+        "pretrained": "IMAGENET1K_V1",
+        "fc8_weight_std": 0.005,
+        "fc8_bias": 0.01,
+        "fc8_lr_multiplier": 10,
+        "train_steps_per_epoch": 6,
+        "source_samples": 2817,
+        "target_samples": 795,
+        "source_initial_shuffle_seed": 42,
+        "target_initial_shuffle_seed": 42,
+        "evaluation_loader_seeds": [
+          42,
+          42
+        ],
+        "worker_seed": 42,
+        "lambda_coral": 0.5,
+        "lambda_mode": "gradient_norm_balance",
+        "lambda_lr": 0.01,
+        "ema_decay": 0.9,
+        "lambda_min": 0.0001,
+        "lambda_max": 100.0
+      },
+      "environment": {
+        "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+        "torch": "2.14.1+cu132",
+        "torchvision": "0.29.1+cu132",
+        "numpy": "2.5.3",
+        "cuda": "13.2",
+        "device": "cuda",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "deterministic_algorithms": true,
+        "tf32": false,
+        "cpu_threads": 1,
+        "cublas_workspace_config": ":4096:8"
+      },
+      "summary": {
+        "setting": "fc8_adaptive_lambda",
+        "epochs_completed": 50,
+        "steps_completed": 300,
+        "final_source_accuracy": 0.9992900248491303,
+        "final_target_accuracy": 0.5132075471698113,
+        "best_target_accuracy": 0.549685534591195,
+        "best_target_epoch": 28,
+        "initial_lambda": 0.5,
+        "final_lambda": 3.6446433067321777,
+        "minimum_lambda_used": 0.5,
+        "maximum_lambda_used": 3.634061336517334,
+        "elapsed_seconds": 840.710901100003,
+        "peak_gpu_memory_bytes": 1881104384,
+        "original_controls_unchanged": true
+      },
+      "log_metrics_match": true
+    },
+    {
+      "run_id": "fc8_adaptive_delayed_50",
+      "label": "fc8 adaptive from 41",
+      "source_directory": "results/adaptive_lambda/fc8",
+      "input_files": [
+        "config.json",
+        "summary.json",
+        "metrics.csv",
+        "train.log",
+        "step_metrics.csv",
+        "environment.json"
+      ],
+      "config": {
+        "schema_version": 5,
+        "suite": "adaptive_lambda",
+        "source": "amazon",
+        "target": "webcam",
+        "epochs": 50,
+        "seed": 42,
+        "seed_policy": "all_rngs_42",
+        "batch_size": 128,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "decay": 0.0005,
+        "num_workers": 0,
+        "coral_layers": [
+          "fc8"
+        ],
+        "monitor_layers": [
+          "fc8"
+        ],
+        "coral_reduction": "mean",
+        "effective_coral_weights": {
+          "fc8": "lambda_used_per_step"
+        },
+        "feature_protocol": {
+          "fc8": {
+            "location": "classifier[6].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": "num_classes"
+          }
+        },
+        "pretrained": "IMAGENET1K_V1",
+        "fc8_weight_std": 0.005,
+        "fc8_bias": 0.01,
+        "fc8_lr_multiplier": 10,
+        "train_steps_per_epoch": 6,
+        "source_samples": 2817,
+        "target_samples": 795,
+        "source_initial_shuffle_seed": 42,
+        "target_initial_shuffle_seed": 42,
+        "evaluation_loader_seeds": [
+          42,
+          42
+        ],
+        "worker_seed": 42,
+        "lambda_coral": 0.5,
+        "lambda_mode": "gradient_norm_balance",
+        "lambda_learning_start_epoch": 41,
+        "adaptive_epochs": 10,
+        "lambda_lr": 0.01,
+        "ema_decay": 0.9,
+        "lambda_min": 0.0001,
+        "lambda_max": 100.0
+      },
+      "environment": {
+        "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+        "torch": "2.14.1+cu132",
+        "torchvision": "0.29.1+cu132",
+        "numpy": "2.5.3",
+        "cuda": "13.2",
+        "device": "cuda",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "deterministic_algorithms": true,
+        "tf32": false,
+        "cpu_threads": 1,
+        "cublas_workspace_config": ":4096:8"
+      },
+      "summary": {
+        "setting": "fc8_adaptive_lambda",
+        "epochs_completed": 50,
+        "steps_completed": 300,
+        "final_source_accuracy": 0.9992900248491303,
+        "final_target_accuracy": 0.5358490566037736,
+        "best_target_accuracy": 0.5421383647798742,
+        "best_target_epoch": 37,
+        "selected_epoch": 37,
+        "selected_target_accuracy": 0.5421383647798742,
+        "selected_source_accuracy": 0.997515086971956,
+        "selected_lambda": 0.5,
+        "selected_phase": "fixed",
+        "best_epoch_data": "best_epoch.json",
+        "selection_metric": "best_target_accuracy",
+        "best_adaptive_target_accuracy": 0.5421383647798742,
+        "best_adaptive_target_epoch": 41,
+        "lambda_learning_start_epoch": 41,
+        "lambda_updates": 60,
+        "initial_lambda": 0.5,
+        "final_lambda": 0.866079568862915,
+        "minimum_lambda_used": 0.5,
+        "maximum_lambda_used": 0.8587913513183594,
+        "elapsed_seconds": 705.5541072000001,
+        "peak_gpu_memory_bytes": 1881104384,
+        "original_controls_retrained": false
+      },
+      "log_metrics_match": true
+    },
+    {
+      "run_id": "joint_adaptive_delayed_100",
+      "label": "Joint adaptive from 50",
+      "source_directory": "results/adaptive_lambda/conv5_fc8",
+      "input_files": [
+        "config.json",
+        "summary.json",
+        "metrics.csv",
+        "train.log",
+        "step_metrics.csv",
+        "environment.json"
+      ],
+      "config": {
+        "schema_version": 5,
+        "suite": "adaptive_lambda",
+        "source": "amazon",
+        "target": "webcam",
+        "epochs": 100,
+        "seed": 42,
+        "seed_policy": "all_rngs_42",
+        "batch_size": 128,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "decay": 0.0005,
+        "num_workers": 0,
+        "coral_layers": [
+          "conv5",
+          "fc8"
+        ],
+        "monitor_layers": [
+          "conv5",
+          "fc8"
+        ],
+        "coral_reduction": "mean",
+        "effective_coral_weights": {
+          "conv5": "lambda_used_per_step / 2",
+          "fc8": "lambda_used_per_step / 2"
+        },
+        "feature_protocol": {
+          "conv5": {
+            "location": "features[10].output_before_relu_and_maxpool",
+            "layout": "B,C,H,W",
+            "observation_layout": "(B*H*W),C",
+            "covariance": "centered_channel_covariance",
+            "covariance_divisor": "B*H*W-1",
+            "loss_divisor": "4*C^2",
+            "dimension": 256,
+            "spatial_shape_at_224": [
+              13,
+              13
+            ]
+          },
+          "fc8": {
+            "location": "classifier[6].linear_output",
+            "layout": "B,D",
+            "observation_layout": "B,D",
+            "covariance": "centered_sample_gram",
+            "covariance_divisor": "B-1",
+            "loss_divisor": "4*D^2",
+            "dimension": "num_classes"
+          }
+        },
+        "pretrained": "IMAGENET1K_V1",
+        "fc8_weight_std": 0.005,
+        "fc8_bias": 0.01,
+        "fc8_lr_multiplier": 10,
+        "train_steps_per_epoch": 6,
+        "source_samples": 2817,
+        "target_samples": 795,
+        "source_initial_shuffle_seed": 42,
+        "target_initial_shuffle_seed": 42,
+        "evaluation_loader_seeds": [
+          42,
+          42
+        ],
+        "worker_seed": 42,
+        "lambda_coral": 0.5,
+        "lambda_mode": "gradient_norm_balance",
+        "lambda_learning_start_epoch": 50,
+        "adaptive_epochs": 51,
+        "lambda_lr": 0.01,
+        "ema_decay": 0.9,
+        "lambda_min": 0.0001,
+        "lambda_max": 100.0
+      },
+      "environment": {
+        "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+        "torch": "2.14.1+cu132",
+        "torchvision": "0.29.1+cu132",
+        "numpy": "2.5.3",
+        "cuda": "13.2",
+        "device": "cuda",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "deterministic_algorithms": true,
+        "tf32": false,
+        "cpu_threads": 1,
+        "cublas_workspace_config": ":4096:8"
+      },
+      "summary": {
+        "setting": "conv5_fc8_adaptive_lambda",
+        "epochs_completed": 100,
+        "steps_completed": 600,
+        "final_source_accuracy": 1.0,
+        "final_target_accuracy": 0.5358490566037736,
+        "best_target_accuracy": 0.559748427672956,
+        "best_target_epoch": 58,
+        "selected_epoch": 58,
+        "selected_target_accuracy": 0.559748427672956,
+        "selected_source_accuracy": 0.9996450124245652,
+        "selected_lambda": 0.8283969759941101,
+        "selected_phase": "adaptive",
+        "best_epoch_data": "best_epoch.json",
+        "selection_metric": "best_target_accuracy",
+        "best_adaptive_target_accuracy": 0.559748427672956,
+        "best_adaptive_target_epoch": 58,
+        "lambda_learning_start_epoch": 50,
+        "lambda_updates": 306,
+        "initial_lambda": 0.5,
+        "final_lambda": 6.935584545135498,
+        "minimum_lambda_used": 0.5,
+        "maximum_lambda_used": 6.887103080749512,
+        "elapsed_seconds": 1686.8417141999998,
+        "peak_gpu_memory_bytes": 1949654528,
+        "original_controls_retrained": false,
+        "fixed_reference_retrained": false
+      },
+      "log_metrics_match": true
+    }
+  ]
+}

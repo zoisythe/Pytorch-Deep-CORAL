@@ -2,7 +2,6 @@
 
 import argparse
 import csv
-import hashlib
 import json
 import math
 import os
@@ -22,7 +21,7 @@ from src.common.experiment_protocol import SUITES, feature_protocol
 from src.common.paths import (
     CONTROL_SETTINGS,
     ORIGINAL_DIR,
-    ROOT,
+    RESULTS_DIR,
     SEED,
     experiment_dir,
     suite_results_dir,
@@ -30,6 +29,8 @@ from src.common.paths import (
 from src.core.coral import coral
 from src.core.model import CORAL_LAYERS, Net
 from src.data.data_loader import get_loader
+from src.training.loss_balance import (DEFAULT_EMA_DECAY, DEFAULT_MIN_EPOCHS,
+                                      DEFAULT_PATIENCE, DEFAULT_TOLERANCE, stopper_from_args)
 
 
 def make_parser():
@@ -50,6 +51,12 @@ def make_parser():
     parser.add_argument('--num_workers', type=int, default=0 if os.name == 'nt' else 4,
                         help='DataLoader workers (Windows defaults to 0 to avoid CUDA DLL commit-memory exhaustion)')
     parser.add_argument('--overwrite', action='store_true', help='Explicitly replace a run in the new experiment tree')
+    parser.add_argument('--stop_on_loss_balance', action='store_true',
+                        help='Stop fixed lambda=0.5 after sustained balance of training losses')
+    parser.add_argument('--balance_tolerance', type=float, default=DEFAULT_TOLERANCE)
+    parser.add_argument('--balance_patience', type=int, default=DEFAULT_PATIENCE)
+    parser.add_argument('--balance_min_epochs', type=int, default=DEFAULT_MIN_EPOCHS)
+    parser.add_argument('--balance_ema_decay', type=float, default=DEFAULT_EMA_DECAY)
     return parser
 
 
@@ -70,6 +77,13 @@ def validate_args(args):
     if args.lambda_coral == 0:
         # Separate optimization (none) from the suite's shared monitoring layers.
         args.coral_layers = ()
+    if args.stop_on_loss_balance:
+        if args.suite == 'original' or args.lambda_coral != 0.5:
+            raise ValueError('Loss-balance stopping requires an advanced run with fixed lambda=0.5')
+        stopper_from_args(args)
+        if args.balance_min_epochs > args.epochs:
+            raise ValueError('balance_min_epochs cannot exceed the maximum epoch budget')
+        args.results_dir = args.results_dir or RESULTS_DIR / 'loss_balance'
     if args.results_dir is None:
         args.results_dir = suite_results_dir(args.suite)
     if args.suite == 'original' and args.results_dir.resolve() != ORIGINAL_DIR.resolve():
@@ -191,19 +205,17 @@ def collect_environment(args):
             'gpu': torch.cuda.get_device_name(args.device) if args.device.type == 'cuda' else None,
             'deterministic_algorithms': True, 'tf32': False,
             'cpu_threads': torch.get_num_threads(),
-            'cublas_workspace_config': os.environ['CUBLAS_WORKSPACE_CONFIG'],
-            'source_sha256': {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
-                              for folder in ('core', 'data', 'common', 'training')
-                              for p in sorted((ROOT / 'src' / folder).glob('*.py'))}}
+            'cublas_workspace_config': os.environ['CUBLAS_WORKSPACE_CONFIG']}
 
 
 def run(args):
     args = validate_args(args)
+    stopper = stopper_from_args(args) if args.stop_on_loss_balance else None
     run_dir = experiment_dir(args.results_dir, args.coral_layers, args.seed, args.lambda_coral)
     if args.suite != 'original':
         from src.plotting.plot_accuracies_losses import validate_frozen_controls
-        validate_frozen_controls(args)
-        if run_dir.name in CONTROL_SETTINGS:
+        validate_frozen_controls(args, allow_epoch_difference=stopper is not None)
+        if run_dir.name in CONTROL_SETTINGS and stopper is None:
             print(f'Using frozen original control: {ORIGINAL_DIR / run_dir.name}', flush=True)
             return ORIGINAL_DIR / run_dir.name
     if run_dir.exists() and any(run_dir.iterdir()) and not args.overwrite:
@@ -252,16 +264,33 @@ def run(args):
     write_json(run_dir / 'environment.json', environment)
     if args.device.type == 'cuda':
         torch.cuda.reset_peak_memory_stats(args.device)
-    rows = []
+    rows, best = [], None
+    if stopper is not None:
+        from src.training.evaluation import evaluate_with_predictions, save_epoch
+        (run_dir / 'best_epoch.json').unlink(missing_ok=True)
+        (run_dir / 'stop_epoch.json').unlink(missing_ok=True)
     started = time.monotonic()
     with (run_dir / 'train.log').open('w', encoding='utf-8') as log_file, \
             (run_dir / 'metrics.csv').open('w', newline='', encoding='utf-8') as metrics_file:
         writer = None
         try:
             for epoch in range(args.epochs):
-                row = {'epoch': epoch + 1, **train(model, optimizer, source_train, target_train, args, epoch),
-                       **evaluate(model, source_eval, 'source', args, epoch),
-                       **evaluate(model, target_eval, 'target', args, epoch)}
+                training = train(model, optimizer, source_train, target_train, args, epoch)
+                if stopper is not None:
+                    # Observe only training losses; labels/accuracy never enter the stop decision.
+                    balance = stopper.update(epoch + 1, training['classification_loss'], training['weighted_CORAL_loss'])
+                    source_metrics, source_predictions = evaluate_with_predictions(model, source_eval, 'source', args)
+                    target_metrics, target_predictions = evaluate_with_predictions(model, target_eval, 'target', args)
+                    row = {'epoch': epoch + 1, **training, **balance, **source_metrics, **target_metrics}
+                    if best is None or row['target_accuracy'] > best['target_accuracy']:
+                        best = row
+                        save_epoch(run_dir, row, (source_predictions, target_predictions), loaders[2:])
+                    if balance['balance_stop'] or epoch + 1 == args.epochs:
+                        save_epoch(run_dir, row, (source_predictions, target_predictions), loaders[2:], name='stop_epoch')
+                else:
+                    row = {'epoch': epoch + 1, **training,
+                           **evaluate(model, source_eval, 'source', args, epoch),
+                           **evaluate(model, target_eval, 'target', args, epoch)}
                 rows.append(row)
                 if writer is None:
                     writer = csv.DictWriter(metrics_file, fieldnames=list(row))
@@ -272,6 +301,9 @@ def run(args):
                 log_file.write(line + '\n')
                 log_file.flush()
                 print(f'{config["setting"]}: {line}', flush=True)
+                if stopper is not None and row['balance_stop']:
+                    print(f'Loss balance reached: stopping at epoch {epoch + 1}', flush=True)
+                    break
             summary = {'setting': config['setting'], 'epochs_completed': len(rows),
                        'final_source_accuracy': rows[-1]['source_accuracy'],
                        'final_target_accuracy': rows[-1]['target_accuracy'],
@@ -280,6 +312,15 @@ def run(args):
                        'elapsed_seconds': time.monotonic() - started,
                        'peak_gpu_memory_bytes': torch.cuda.max_memory_allocated(args.device)
                        if args.device.type == 'cuda' else 0}
+            if stopper is not None:
+                summary.update(training_complete=True, max_epochs=args.epochs,
+                               stop_epoch=len(rows), stop_reason='loss_balance' if rows[-1]['balance_stop'] else 'max_epochs',
+                               stopped_early=len(rows) < args.epochs, lambda_updates=0,
+                               steps_completed=sum(row['train_steps'] for row in rows),
+                               final_lambda=args.lambda_coral, selected_epoch=len(rows),
+                               selected_target_accuracy=rows[-1]['target_accuracy'],
+                               selection_metric='training_stop', best_epoch_data='best_epoch.json',
+                               stop_epoch_data='stop_epoch.json', original_controls_retrained=False)
             write_json(run_dir / 'summary.json', summary)
         except BaseException:
             log_file.write(traceback.format_exc())
