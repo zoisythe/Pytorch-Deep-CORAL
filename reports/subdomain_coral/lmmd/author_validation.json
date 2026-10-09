@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "source_url": "https://raw.githubusercontent.com/easezyc/deep-transfer-learning/master/UDA/pytorch1.0/DSAN/lmmd.py",
+  "reference": "unmodified_author_cal_weight_and_guassian_kernel_on_cpu",
+  "dtype": "float32",
+  "loss": 3.1268014907836914,
+  "reference_loss": 3.1268014907836914,
+  "absolute_loss_error": 0.0,
+  "maximum_feature_gradient_error": 2.2351741790771484e-08,
+  "target_probability_gradient": null
+}

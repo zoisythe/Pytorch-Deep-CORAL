@@ -1,0 +1,18 @@
+{
+  "mathematics": {
+    "passed": true,
+    "dtype": "float64",
+    "cases": 6,
+    "checks": [
+      "independent_author_formula",
+      "single_class_multi_rbf_mmd",
+      "shared_singleton_class",
+      "finite_feature_gradients",
+      "detached_probabilities",
+      "connected_zero_no_shared_class",
+      "absent_classes_missing",
+      "identical_feature_bandwidth_floor",
+      "all_target_images_soft_weighted"
+    ]
+  }
+}

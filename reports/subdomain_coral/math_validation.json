@@ -1,0 +1,16 @@
+{
+  "mathematics": {
+    "passed": true,
+    "dtype": "float64",
+    "cases": 5,
+    "checks": [
+      "single_class_equals_global_coral",
+      "finite_feature_gradients",
+      "probability_weights_detached",
+      "connected_zero_and_missing_distances",
+      "single_samples_and_absent_classes",
+      "effective_sample_size_gate",
+      "all_target_images_contribute_soft_weights"
+    ]
+  }
+}

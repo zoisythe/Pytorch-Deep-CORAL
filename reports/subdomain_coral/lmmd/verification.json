@@ -1,0 +1,66 @@
+{
+  "mathematics": {
+    "passed": true,
+    "dtype": "float64",
+    "cases": 6,
+    "checks": [
+      "independent_author_formula",
+      "single_class_multi_rbf_mmd",
+      "shared_singleton_class",
+      "finite_feature_gradients",
+      "detached_probabilities",
+      "connected_zero_no_shared_class",
+      "absent_classes_missing",
+      "identical_feature_bandwidth_floor",
+      "all_target_images_soft_weighted"
+    ]
+  },
+  "controls": {
+    "passed": true,
+    "runs": 5,
+    "epochs": 250,
+    "steps": 1500,
+    "class_rows": 46500,
+    "warmup_epochs_verified": 10,
+    "target_samples_per_epoch": 795,
+    "warmup_class_rows_verified_per_run": 1860,
+    "checks": [
+      "locked_protocol",
+      "warmup_equality",
+      "weight_schedule",
+      "class_support",
+      "loss_reductions",
+      "csv_log_npz_predictions",
+      "full_domain_accuracy",
+      "epoch_50_selection",
+      "matching_environments",
+      "paired_image_order"
+    ]
+  },
+  "new_run": {
+    "passed": true,
+    "epochs": 50,
+    "steps": 300,
+    "lmmd_class_rows": 9300,
+    "coral_monitor_class_rows": 9300,
+    "warmup": {
+      "passed": true,
+      "epochs": 10,
+      "steps": 60,
+      "coral_class_rows": 1860,
+      "tolerance": 1e-06
+    },
+    "target_training_labels_used": false
+  },
+  "author_implementation": {
+    "passed": true,
+    "source_url": "https://raw.githubusercontent.com/easezyc/deep-transfer-learning/master/UDA/pytorch1.0/DSAN/lmmd.py",
+    "reference": "unmodified_author_cal_weight_and_guassian_kernel_on_cpu",
+    "dtype": "float32",
+    "loss": 3.1268014907836914,
+    "reference_loss": 3.1268014907836914,
+    "absolute_loss_error": 0.0,
+    "maximum_feature_gradient_error": 2.2351741790771484e-08,
+    "target_probability_gradient": null
+  }
+}

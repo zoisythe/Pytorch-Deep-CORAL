@@ -1,0 +1,11 @@
+setting,reference,target_samples,corrected,regressed,net_correct,gain_pp
+global,no_adaptation,795,95,37,58,7.29559748427673
+global_quarter,global,795,14,12,2,0.25157232704402516
+local,global,795,14,107,-93,-11.69811320754717
+mixed,global_quarter,795,17,53,-36,-4.528301886792453
+mixed,global,795,13,47,-34,-4.276729559748428
+lmmd,global,795,119,21,98,12.327044025157234
+lmmd,global_quarter,795,119,23,96,12.075471698113208
+lmmd,local,795,201,10,191,24.0251572327044
+lmmd,mixed,795,146,14,132,16.60377358490566
+lmmd,no_adaptation,795,175,19,156,19.62264150943396

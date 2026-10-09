@@ -2,7 +2,50 @@
 
 Office-31 Amazon → Webcam；基于 [Deep CORAL](https://arxiv.org/abs/1607.01719)。
 
-近期结果见 [研究报告](reports/2026-10-08-coral-experiments.md)：不同层、adaptive_lambda 与早停策略选择；[reports/](reports/README.md) 同时归档可直接查看的数据表和 PNG 图。
+最新结论见 [AlexNet 子域对齐综合报告](reports/subdomain_coral/analysis/report.md)，包含六组结果、损失公式与推导、尺度/类别结构诊断和可检验的机制推测。原始结果见 [LMMD 追加对照](reports/subdomain_coral/lmmd/report.md)及[类条件 CORAL 五组报告](reports/subdomain_coral/report.md)；原有不同层、adaptive_lambda 与早停研究见 [研究报告](reports/2026-10-08-coral-experiments.md)。[reports/](reports/README.md) 同时归档可直接查看的数据表和 PNG 图。
+
+## AlexNet fc8 类条件 CORAL
+
+固定设计见 [类条件 CORAL 协议](reports/subdomain_coral/protocol.md)。借鉴 DSAN 的类别软权重，将 fc8 CORAL 扩展为逐类别协方差对齐；论文原方法为 LMMD，本套件是自行定义的类条件 CORAL。
+
+五组为 no_adaptation、global、global_quarter、local、mixed。全部重新训练 50 轮，seed=42、batch=128；四个适应组前 10 轮统一使用 0.5 全局 CORAL，第 11 轮起分别使用全局 0.5、全局 0.25、局部 0.5、全局/局部各 0.25。目标概率停止梯度，目标训练标签忽略；主指标为固定第 50 轮准确率。
+
+```powershell
+uv run --no-sync python -m src.experiments.subdomain.run
+# 仅跳过配置、环境及产物核验通过的完整运行
+uv run --no-sync python -m src.experiments.subdomain.run --resume
+# 指定一个设置；中断运行需要显式 --overwrite 从头重跑
+uv run --no-sync python -m src.experiments.subdomain.run --setting local
+# 必要数学检查及正式结果核验；从最终 logits 重建事后诊断和 PNG
+uv run --no-sync python -m src.experiments.subdomain.verify
+uv run --no-sync python -m src.plotting.plot_subdomain
+```
+
+完整运行保存在 `results/subdomain_coral/<setting>/`，报告及可检查的数据快照保存在 `reports/subdomain_coral/`。记录原始/加权损失、类别支持和有效样本量；最终 logits 用于训练结束后的真实类别协方差、中心及谱诊断。不生成模型 checkpoint，旧归档保留。
+
+五组已完成 250 轮、1,500 次更新并通过统一核验，见 [五组实验报告](reports/subdomain_coral/report.md)。第 50 轮全局组为 53.84%，类条件组为 42.14%（−11.70 个百分点）；联合组为 49.56%，相对较弱全局组 54.09% 下降 4.53 个百分点。本轮为单种子负结果，协方差距离减小未转化为分类收益。
+
+## LMMD 追加对照
+
+沿用 AlexNet fc8 的 seed=42、batch=128 和固定 50 轮协议，只新增一组：前十轮 `CE + 0.5G`，第十一轮起 `CE + 0.5 LMMD`。LMMD 使用作者默认五核 RBF、自适应且停止梯度的带宽，以及停止梯度的目标软类别权重；共享类别允许单样本，不使用 CORAL 的协方差支持筛选。详见 [LMMD 协议](reports/subdomain_coral/lmmd/protocol.md)。
+
+```powershell
+uv run --no-sync python -m src.experiments.lmmd.run
+uv run --no-sync python -m src.experiments.lmmd.run --resume
+uv run --no-sync python -m src.experiments.lmmd.verify
+uv run --no-sync python -m src.plotting.plot_lmmd
+```
+
+新运行保存在 `results/subdomain_coral/lmmd/`，比较报告和快照保存在 `reports/subdomain_coral/lmmd/`；原五组结果复用，不重跑或覆盖。全局/类条件 CORAL 在新组中继续监测，原五组未记录的 LMMD 值保持为空。
+
+LMMD 已完成 50 轮/300 步并通过核验，见 [六组比较报告](reports/subdomain_coral/lmmd/report.md)：第 50 轮为 66.16%（526/795），相对全局 CORAL 提高 12.33 个百分点，相对类条件 CORAL 提高 24.03 个百分点。该结果仍限于 seed=42、Amazon→Webcam；支持规则和损失尺度差异不能被单独归因于核函数。
+
+[综合报告](reports/subdomain_coral/analysis/report.md)进一步推导加权协方差修正、特征梯度、LMMD 核均值展开及尺度关系。新增事后诊断显示，类条件 CORAL 改善了部分协方差形状，但类别中心方向和软权重纯度没有相应改善；LMMD 的分类收益伴随更好的中心方向。相关机制仍待统一支持规则、优化尺度及多种子的消融检验。
+
+```powershell
+# 仅从版本管理中的最终 logits/CSV 快照复算，不重新训练
+uv run --no-sync python -m src.analysis.subdomain_synthesis
+```
 
 ## ResNet-50 V2 六组实验
 
@@ -27,13 +70,14 @@ uv run --no-sync python -m src.training.train --suite resnet50 --coral_layers la
 
 - 新运行所有随机 seed 固定为 **42**，包括 Python、NumPy、PyTorch、CUDA、DataLoader、worker；目标域不再加偏移。
 - 原始实验为 `no_adaptation`（仅 CE）和 `fc8`（CE + 0.5 CORAL(fc8)）。重跑后集中归档到 `results/original/`。
-- AlexNet 进阶实验引用原始归档，不重跑、不复制对照组。缺失或不兼容的原始数据会报错；ResNet 使用自己的独立对照。
+- AlexNet 原有层位置进阶套件引用原始归档，不重跑、不复制对照组。缺失或不兼容的原始数据会报错；ResNet 与类条件 CORAL 套件分别使用自己的独立对照。
 - 使用 CSV/JSON 保存数据，不生成 `.pth`；实验输出图片只使用 PNG，数据集保留原始格式。
 - 结果目录不包含 `seed_42` 中间层，seed 写入配置。历史配置和实际采样 seed 保留；新运行不再计算或比较文件、代码哈希。
 
 ```text
 src/
-  core/                 # AlexNet、ResNet-50、CORAL 数学实现
+  core/                 # AlexNet、ResNet-50、全局/类条件 CORAL、LMMD 数学实现
+  analysis/             # 由归档快照复算的事后结构诊断
   data/                 # 加载、统计
   common/               # 路径、seed、协议、通用工具
   training/             # 共用训练循环、套件运行器
@@ -43,6 +87,8 @@ src/
     conv5/run.py        # conv5 进阶实验
     loss_balance/       # 固定 lambda=0.5，按训练损失平衡早停
     adaptive_lambda/    # 历史自适应权重实验
+    subdomain/          # 五组匹配对照、十轮预热、类条件 fc8 CORAL
+    lmmd/               # 复用五组对照，只新增一组 LMMD
   plotting/             # 单套件、综合绘图及 CSV 校验
 results/
   original/{no_adaptation,fc8}/
@@ -52,10 +98,14 @@ results/
   loss_balance/{fc8,conv5_fc8}/
   adaptive_lambda/{fc8,conv5_fc8}/
   combined_experiments/
+  subdomain_coral/{no_adaptation,global,global_quarter,local,mixed,lmmd}/
+reports/
+  subdomain_coral/       # 固定协议、原始报告、PNG 和最终预测/日志快照
+    analysis/           # 六组综合报告、公式推导和事后诊断
 ```
 
 每个运行保留 `config.json`、`environment.json`、`metrics.csv`、`train.log`、`summary.json` 与 `plots/*.png`。
-每个套件的 `comparison/` 保存图、`summary.csv`、`provenance.json`、中文 `report.md`。
+原有 AlexNet 套件的 `comparison/` 保存图、`summary.csv`、`provenance.json`、中文 `report.md`；类条件套件的汇总位于 `reports/subdomain_coral/`。
 原始两组同时监测 conv5/fc6/fc7/fc8，以供进阶实验共享逐层对照；非优化层在 no-grad 下计算。
 完整比较见 [综合报告](results/combined_experiments/report.md)，
 原始两组见 [原始实验报告](results/original/comparison/report.md)。

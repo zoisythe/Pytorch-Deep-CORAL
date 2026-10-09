@@ -1,0 +1,4 @@
+variant,baseline,corrected,regressed,both_correct,both_wrong,net_correct,delta_pp
+local,global,14,107,321,353,-93,-11.69811320754717
+mixed,global_quarter,17,53,377,348,-36,-4.528301886792453
+mixed,global,13,47,381,354,-34,-4.276729559748428

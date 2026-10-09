@@ -1,0 +1,6 @@
+variant,baseline,corrected,regressed,both_correct,both_wrong,net_correct,delta_pp
+lmmd,local,201,10,325,259,191,24.0251572327044
+lmmd,global,119,21,407,248,98,12.327044025157234
+lmmd,mixed,146,14,380,255,132,16.60377358490566
+lmmd,global_quarter,119,23,407,246,96,12.075471698113208
+lmmd,no_adaptation,175,19,351,250,156,19.62264150943396
