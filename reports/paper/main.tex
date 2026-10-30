@@ -1,0 +1,62 @@
+% !TeX program = lualatex
+\documentclass[UTF8,fontset=fandol,11pt,a4paper]{ctexart}
+\usepackage[margin=24mm,headheight=15pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{texgyretermes-regular.otf}[BoldFont=texgyretermes-bold.otf,ItalicFont=texgyretermes-italic.otf,BoldItalicFont=texgyretermes-bolditalic.otf]
+\setsansfont{texgyreheros-regular.otf}[BoldFont=texgyreheros-bold.otf]
+\setmonofont{lmmono10-regular.otf}[Scale=MatchLowercase]
+\usepackage{amsmath,amssymb,bm,mathtools,graphicx,booktabs,tabularx,longtable,array}
+\usepackage{float,placeins,xurl}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{xcolor,hyperref,fancyhdr}
+\definecolor{inkblue}{HTML}{245781}
+\hypersetup{colorlinks=true,linkcolor=inkblue,citecolor=inkblue,urlcolor=inkblue,
+  pdftitle={Deep CORAL 的扩展探索：多层对齐、权重自适应与 LMMD 对照实验},pdfauthor={张以禾}}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Deep CORAL 的扩展探索}
+\fancyhead[R]{\small Office-31：Amazon $\to$ Webcam}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.25em}
+\linespread{1.12}
+\raggedbottom
+\setlength{\emergencystretch}{2em}
+\setlength{\textfloatsep}{13pt plus 3pt minus 3pt}
+\setlength{\floatsep}{11pt plus 3pt minus 3pt}
+\renewcommand{\arraystretch}{1.15}
+\graphicspath{{figures/}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\CE}{\mathcal L_{\mathrm{CE}}}
+\newcommand{\sg}{\operatorname{sg}}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
+\newcommand{\ESS}{\operatorname{ESS}}
+\newcommand{\file}[1]{\texttt{\nolinkurl{#1}}}
+\newcommand{\pp}{\,\text{pp}}
+\input{tables/results.tex}
+\title{\bfseries Deep CORAL 的扩展探索\\[3pt]\large 多层对齐、权重自适应与 LMMD 对照实验}
+\author{张以禾}
+\date{2026 年 10 月 30 日}
+\begin{document}
+\maketitle
+\begin{abstract}
+无监督域适应通过利用目标域的无标签图像，改善源域模型在分布变化后的分类表现。本研究围绕 Deep CORAL 的扩展开展四个阶段的探索：增加对齐层、学习适应权重、替换预训练网络，以及比较类别条件下的协方差匹配与核分布匹配。在 Office-31 Amazon$\to$Webcam 的归档实验中，多层 CORAL 的最佳固定轮配置为 conv5+fc8，准确率 55.09\%，相对 fc8 增加 0.88 个百分点，但增加层数没有形成一致收益；基于梯度范数的自适应权重未形成稳定改善，并伴随权重增长和梯度方向冲突。ResNet-50 V2 在共享 BatchNorm 下的无 CORAL 对照达到 80.00\%，含 logits 的 CORAL 配置取得 2.14--3.65 个百分点的同轮增益。进一步的 AlexNet 匹配对照中，类条件 CORAL 与 LMMD 分别达到 42.14\% 和 66.16\%，全局 CORAL 为 53.84\%；独立的 ResNet LMMD 配方获得 93.71\% 的目标标签选轮结果。实验与事后诊断表明，对齐层数、权重大小和协方差距离都不能单独代表迁移质量；统计目标是否保留类别位置、软分组是否可靠，以及比较协议是否一致，是解释结果的关键。本文逐阶段记录实验结论与反思，并据此总结可检验的改进方向。
+\end{abstract}
+\noindent\textbf{关键词：}无监督域适应；Deep CORAL；多层对齐；自适应权重；LMMD；实验分析
+\input{sections/00-introduction}
+\input{sections/01-multilayer}
+\FloatBarrier
+\input{sections/02-adaptive}
+\FloatBarrier
+\input{sections/03-backbone}
+\FloatBarrier
+\input{sections/04-alternatives}
+\FloatBarrier
+\input{sections/05-conclusion}
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+\FloatBarrier
+\appendix
+\input{sections/appendix}
+\end{document}

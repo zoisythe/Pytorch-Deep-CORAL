@@ -1,0 +1,10 @@
+{
+  "setting": "no_adaptation",
+  "epochs_completed": 50,
+  "final_source_accuracy": 1.0,
+  "final_target_accuracy": 0.46540880503144655,
+  "best_target_accuracy": 0.48050314465408805,
+  "best_target_epoch": 3,
+  "elapsed_seconds": 491.7025811000003,
+  "peak_gpu_memory_bytes": 1544050688
+}

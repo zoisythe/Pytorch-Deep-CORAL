@@ -1,0 +1,46 @@
+{
+  "training_performed": false,
+  "snapshots_verified": 42,
+  "accuracy_count_checks": 27,
+  "inventory": {
+    "runs": 27,
+    "epochs": 1593,
+    "updates": 22968
+  },
+  "fixed_adaptive_shared_first_49_epochs": true,
+  "replay_first_stop": 58,
+  "same_epoch_resnet_comparisons_verified": true,
+  "adaptive_diagnostics": {
+    "50": {
+      "CORAL_loss": 0.0837123766541481,
+      "classification_loss": 0.059464371452728905,
+      "weighted_CORAL_loss": 0.04292174118260542,
+      "lambda_used": 0.5127351780732473,
+      "gradient_cosine": -0.41493022441864014,
+      "gradient_CE_ema": 0.3907902141412099,
+      "gradient_CORAL_ema": 0.3217194179693858,
+      "ema_norm_ratio": 1.2146926555064101
+    },
+    "58": {
+      "CORAL_loss": 0.06760372407734394,
+      "classification_loss": 0.056367507204413414,
+      "weighted_CORAL_loss": 0.05597154858211676,
+      "lambda_used": 0.8283969759941101,
+      "gradient_cosine": -0.4485595573981603,
+      "gradient_CE_ema": 0.35042231778303784,
+      "gradient_CORAL_ema": 0.25610846777757007,
+      "ema_norm_ratio": 1.368257445073543
+    },
+    "100": {
+      "CORAL_loss": 0.01667149520168702,
+      "classification_loss": 0.09618592510620753,
+      "weighted_CORAL_loss": 0.11267321929335594,
+      "lambda_used": 6.765034516652425,
+      "gradient_cosine": -0.6405202249685923,
+      "gradient_CE_ema": 0.4367767721414566,
+      "gradient_CORAL_ema": 0.058016762137413025,
+      "ema_norm_ratio": 7.528458260165371
+    }
+  },
+  "note": "Existing run verification JSONs are archived evidence; this script rechecks aggregates, curves, and formulas stated above, without rerunning training or model inference."
+}

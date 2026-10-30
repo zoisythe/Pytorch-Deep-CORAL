@@ -1,0 +1,86 @@
+{
+  "original_training_jobs": 1,
+  "advanced_training_jobs": 1,
+  "advanced_processes": "Independent Python processes, each with all RNG seeds=42",
+  "timing_scope": "Single-run elapsed time under shared resources; not an algorithm speed comparison",
+  "original_controls_before": {
+    "no_adaptation/config.json": "dfafb88a0b03ebcf88ee281fd97a2ee0a3b003f03da2de3d1e01e308c4bfd389",
+    "no_adaptation/environment.json": "68185df7b73a15adb19271f47875a110e7bc036cded49d13ad556724cd74213a",
+    "no_adaptation/metrics.csv": "76cd9e2c39e7ebf27cd2cc644176b40af839d8f3f4695f2626e77fdde91ccbd2",
+    "no_adaptation/summary.json": "b72edad735c8531a5ef4ec3639ee9576ba3b108e5d7e2aa78768d464f2c25e42",
+    "no_adaptation/train.log": "bd7d5aa8faddf504d2a430f9318a0cf7f4d356c8cd5a3aa06ccc5f841f471b43",
+    "fc8/config.json": "2c6734591d2a4a50acd191674d73df997740b82341e18cbc67557759af2cd485",
+    "fc8/environment.json": "68185df7b73a15adb19271f47875a110e7bc036cded49d13ad556724cd74213a",
+    "fc8/metrics.csv": "41a86b548f22d1af905271796a9f2b4d5fbe7cd793cb41ed18ec513c8d176a21",
+    "fc8/summary.json": "08198bdf47ac749293169fb38bb3a0a5c7ed5d9963d428f4fa91a689d62df5cf",
+    "fc8/train.log": "78eebc7278011fbec60e5dbe90103a0558f577afbca706eee7a32044d3135ff0"
+  },
+  "completed_settings": [
+    "fc6",
+    "fc7",
+    "fc6_fc7",
+    "fc6_fc8",
+    "fc7_fc8",
+    "fc6_fc7_fc8",
+    "conv5",
+    "conv5_fc8"
+  ],
+  "reused_completed_settings": [
+    "fc6",
+    "fc7",
+    "fc6_fc7"
+  ],
+  "interrupted_attempts": [
+    {
+      "setting": "fc6_fc8",
+      "line_count": 28,
+      "completed_epochs": 27,
+      "metrics_prefix_sha256": "80f8723c87645d7522f083439aff67d28b9be67bfed7fb4642e6e49c89d17bd1"
+    }
+  ],
+  "previous_execution": {
+    "original_training_jobs": 1,
+    "advanced_training_jobs": 2,
+    "advanced_processes": "Independent Python processes, each with all RNG seeds=42",
+    "timing_scope": "Single-run elapsed time under shared resources; not an algorithm speed comparison",
+    "original_controls_before": {
+      "no_adaptation/config.json": "dfafb88a0b03ebcf88ee281fd97a2ee0a3b003f03da2de3d1e01e308c4bfd389",
+      "no_adaptation/environment.json": "68185df7b73a15adb19271f47875a110e7bc036cded49d13ad556724cd74213a",
+      "no_adaptation/metrics.csv": "76cd9e2c39e7ebf27cd2cc644176b40af839d8f3f4695f2626e77fdde91ccbd2",
+      "no_adaptation/summary.json": "b72edad735c8531a5ef4ec3639ee9576ba3b108e5d7e2aa78768d464f2c25e42",
+      "no_adaptation/train.log": "bd7d5aa8faddf504d2a430f9318a0cf7f4d356c8cd5a3aa06ccc5f841f471b43",
+      "fc8/config.json": "2c6734591d2a4a50acd191674d73df997740b82341e18cbc67557759af2cd485",
+      "fc8/environment.json": "68185df7b73a15adb19271f47875a110e7bc036cded49d13ad556724cd74213a",
+      "fc8/metrics.csv": "41a86b548f22d1af905271796a9f2b4d5fbe7cd793cb41ed18ec513c8d176a21",
+      "fc8/summary.json": "08198bdf47ac749293169fb38bb3a0a5c7ed5d9963d428f4fa91a689d62df5cf",
+      "fc8/train.log": "78eebc7278011fbec60e5dbe90103a0558f577afbca706eee7a32044d3135ff0"
+    },
+    "completed_settings": [
+      "fc6",
+      "fc7"
+    ]
+  },
+  "retry_prefix_checks": [
+    {
+      "setting": "fc6_fc8",
+      "line_count": 28,
+      "completed_epochs": 27,
+      "metrics_prefix_sha256": "80f8723c87645d7522f083439aff67d28b9be67bfed7fb4642e6e49c89d17bd1",
+      "retry_metrics_prefix_sha256": "80f8723c87645d7522f083439aff67d28b9be67bfed7fb4642e6e49c89d17bd1",
+      "exact_prefix_match": true
+    }
+  ],
+  "original_controls_after": {
+    "no_adaptation/config.json": "dfafb88a0b03ebcf88ee281fd97a2ee0a3b003f03da2de3d1e01e308c4bfd389",
+    "no_adaptation/environment.json": "68185df7b73a15adb19271f47875a110e7bc036cded49d13ad556724cd74213a",
+    "no_adaptation/metrics.csv": "76cd9e2c39e7ebf27cd2cc644176b40af839d8f3f4695f2626e77fdde91ccbd2",
+    "no_adaptation/summary.json": "b72edad735c8531a5ef4ec3639ee9576ba3b108e5d7e2aa78768d464f2c25e42",
+    "no_adaptation/train.log": "bd7d5aa8faddf504d2a430f9318a0cf7f4d356c8cd5a3aa06ccc5f841f471b43",
+    "fc8/config.json": "2c6734591d2a4a50acd191674d73df997740b82341e18cbc67557759af2cd485",
+    "fc8/environment.json": "68185df7b73a15adb19271f47875a110e7bc036cded49d13ad556724cd74213a",
+    "fc8/metrics.csv": "41a86b548f22d1af905271796a9f2b4d5fbe7cd793cb41ed18ec513c8d176a21",
+    "fc8/summary.json": "08198bdf47ac749293169fb38bb3a0a5c7ed5d9963d428f4fa91a689d62df5cf",
+    "fc8/train.log": "78eebc7278011fbec60e5dbe90103a0558f577afbca706eee7a32044d3135ff0"
+  },
+  "original_controls_unchanged": true
+}

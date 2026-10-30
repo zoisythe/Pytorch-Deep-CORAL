@@ -1,0 +1,10 @@
+{
+  "setting": "fc7_fc8",
+  "epochs_completed": 50,
+  "final_source_accuracy": 0.9968051118210862,
+  "final_target_accuracy": 0.5433962264150943,
+  "best_target_accuracy": 0.5433962264150943,
+  "best_target_epoch": 45,
+  "elapsed_seconds": 512.6705212999996,
+  "peak_gpu_memory_bytes": 1893011968
+}

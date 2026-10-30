@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "runs": 1,
+  "epochs": 72,
+  "steps": 6264,
+  "class_rows": 194184,
+  "source_samples": 2817,
+  "target_samples": 795,
+  "patience_replayed": true,
+  "prediction_artifacts_verified": [
+    "best_epoch",
+    "stop_epoch"
+  ],
+  "checkpoint_metadata_verified": true,
+  "target_labels_in_loss": false,
+  "target_labels_in_selection_and_stopping": true,
+  "author_formula": {
+    "passed": true,
+    "dimensions": [
+      32,
+      256
+    ],
+    "dtype": "float32",
+    "loss": 3.3130640983581543,
+    "reference_loss": 3.3130640983581543,
+    "absolute_loss_error": 0.0,
+    "maximum_feature_gradient_error": 5.820766091346741e-10,
+    "target_probability_gradient": null,
+    "reference": "unmodified_author_cal_weight_and_guassian_kernel_on_cpu",
+    "source_url": "https://raw.githubusercontent.com/easezyc/deep-transfer-learning/master/UDA/pytorch1.0/DSAN/lmmd.py"
+  },
+  "selected_checkpoint_predictions": {
+    "passed": true,
+    "target_samples": 795,
+    "maximum_logit_error": 0.0,
+    "target_correct": 745
+  }
+}

@@ -1,0 +1,11 @@
+\begin{frame}[t]{AlexNet + LMMD：正确率提高到 66.16\%}
+\fullfig{alex_lmmd_accuracy.pdf}
+\takeaway{固定第 50 轮：全局 CORAL 53.84\%，子域 CORAL 42.14\%，LMMD 66.16\%。}
+\src{同一 AlexNet / fc8 / 十轮预热配置；LMMD 相对全局 CORAL +12.33 pp。}
+\end{frame}
+
+\begin{frame}[t]{ResNet-50 + LMMD：最佳正确率 93.71\%}
+\fullfig{resnet_lmmd_accuracy.pdf}
+\takeaway{第 42 轮最佳 93.71\%；第 72 轮停止为 93.58\%。}
+\src{ResNet-50 V2 + 256 维 bottleneck；最佳轮按目标正确率选择；论文 DSAN A$\to$W 为 $93.6\pm0.2\%$。}
+\end{frame}

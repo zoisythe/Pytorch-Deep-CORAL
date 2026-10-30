@@ -1,0 +1,16 @@
+{
+  "runs": 27,
+  "epochs": 1593,
+  "updates": 22968,
+  "figures": 5,
+  "classification_display": "accuracy_percent_only",
+  "training_performed": false,
+  "checks": [
+    "source snapshot files exist",
+    "all epoch accuracies match archived outcomes",
+    "27-run inventory reconciles",
+    "ten warmup epochs match",
+    "LMMD best/stop epochs match",
+    "adaptive lambda and raw loss endpoints match"
+  ]
+}

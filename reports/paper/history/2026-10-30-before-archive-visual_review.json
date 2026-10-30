@@ -1,0 +1,35 @@
+{
+  "reviewed_on": "2026-10-30",
+  "pages": 17,
+  "overview_reviewed": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+  ],
+  "detail_reviewed_before_final_layout": [
+    5,
+    10,
+    14
+  ],
+  "checks": [
+    "Four-part exploration-experiment-conclusion structure",
+    "All eight figures visible with labels and captions",
+    "Tables, equations and bibliography render without clipping",
+    "Final layout keeps experimental plots beside their discussion"
+  ],
+  "result": "passed"
+}

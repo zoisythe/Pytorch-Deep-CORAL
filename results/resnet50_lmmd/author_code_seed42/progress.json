@@ -1,0 +1,8 @@
+{
+  "epoch": 72,
+  "best_epoch": 42,
+  "best_target_accuracy": 0.9371069182389937,
+  "latest_target_accuracy": 0.9358490566037736,
+  "stale_epochs": 30,
+  "elapsed_seconds": 5279.235000000001
+}

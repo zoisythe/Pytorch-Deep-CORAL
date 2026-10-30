@@ -1,0 +1,14 @@
+{
+  "observations": [
+    {
+      "observed_at": "2026-10-08 16:55:55 Asia/Shanghai",
+      "source": "nvidia-smi -q -d PERFORMANCE,POWER,CLOCK",
+      "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+      "current_power_limit_w": 24.0,
+      "default_power_limit_w": 55.0,
+      "software_power_cap_active": true,
+      "power_setting_changed_by_agent": false
+    }
+  ],
+  "cost_comparison_caveat": "运行期间观察到 GPU 软件功耗上限为 24W（默认 55W）。各组耗时反映实际机器状态，不用于严格计算效率排名。"
+}

@@ -1,0 +1,42 @@
+{
+  "epoch": 58,
+  "selection_metric": "target_accuracy",
+  "tie_break": "earliest_epoch",
+  "phase": "adaptive",
+  "metrics": {
+    "epoch": 58,
+    "train_steps": 6,
+    "classification_loss": 0.056367507204413414,
+    "CORAL_loss": 0.06760372407734394,
+    "CORAL_conv5": 0.03711969840029875,
+    "CORAL_fc8": 0.09808775037527084,
+    "weighted_CORAL_loss": 0.05597154858211676,
+    "total_loss": 0.11233905702829361,
+    "lambda_used": 0.8283969759941101,
+    "lambda_learning": 1.0,
+    "gradient_CE": 0.35175547500451404,
+    "gradient_CORAL": 0.23884588479995728,
+    "gradient_cosine": -0.4485595573981603,
+    "lambda_next": 0.8360515634218851,
+    "gradient_CE_ema": 0.35042231778303784,
+    "gradient_CORAL_ema": 0.25610846777757007,
+    "weighted_gradient_CORAL_ema": 0.21212217708428702,
+    "weight_objective": 0.01915433257818222,
+    "lambda_min": 0.8091905117034912,
+    "lambda_max": 0.8474923372268677,
+    "lambda_end": 0.8551180362701416,
+    "source_accuracy": 0.9996450124245652,
+    "source_correct": 2816,
+    "source_samples": 2817,
+    "target_accuracy": 0.559748427672956,
+    "target_correct": 445,
+    "target_samples": 795
+  },
+  "files": [
+    "best_epoch/metrics.csv",
+    "best_epoch/step_metrics.csv",
+    "best_epoch/source_predictions.csv",
+    "best_epoch/target_predictions.csv",
+    "best_epoch/evaluation.npz"
+  ]
+}

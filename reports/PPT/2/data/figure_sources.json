@@ -1,0 +1,18 @@
+{
+  "baseline": [
+    "alex_epochs.csv"
+  ],
+  "alex_layers": [
+    "alex_layers.csv"
+  ],
+  "lambda_failure": [
+    "alex_epochs.csv"
+  ],
+  "alex_lmmd_accuracy": [
+    "subdomain_summary.csv",
+    "subdomain_epochs.csv"
+  ],
+  "resnet_lmmd_accuracy": [
+    "resnet_lmmd_epochs.csv"
+  ]
+}

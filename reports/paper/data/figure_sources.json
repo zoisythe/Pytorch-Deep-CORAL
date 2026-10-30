@@ -1,0 +1,28 @@
+{
+  "baseline": [
+    "alex_epochs.csv"
+  ],
+  "layers": [
+    "alex_layers.csv"
+  ],
+  "adaptive": [
+    "alex_epochs.csv"
+  ],
+  "stopping": [
+    "alex_epochs.csv",
+    "early_stop.csv"
+  ],
+  "subdomain": [
+    "subdomain_summary.csv",
+    "subdomain_epochs.csv"
+  ],
+  "geometry": [
+    "subdomain_diagnostics.csv"
+  ],
+  "resnet_coral": [
+    "resnet_summary.csv"
+  ],
+  "resnet_lmmd": [
+    "resnet_lmmd_epochs.csv"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "pdf": "main.pdf",
+  "pages": 15,
+  "pdf_bytes": 649542,
+  "main_sections": [
+    "多层 CORAL：增加对齐位置能否改善迁移？",
+    "自适应 λ：梯度范数平衡为何没有形成稳定收益？",
+    "更换网络：强预训练下 CORAL 还提供什么？",
+    "寻找其他对齐方案比较：从类条件 CORAL 到 LMMD"
+  ],
+  "figures": 7,
+  "available_figures": 8,
+  "bibliography_entries": 5,
+  "latex_findings": {
+    "latex_error": [],
+    "missing_glyph": [],
+    "unresolved_reference": [],
+    "overfull": []
+  },
+  "text_outside_page": [],
+  "page_rendering": ".build/preview/page-01.png through page-15.png",
+  "visual_review": "Page rendering produced; visual inspection is recorded separately after review.",
+  "training_performed": false
+}

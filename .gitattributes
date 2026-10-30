@@ -1,0 +1,7 @@
+# Preserve the original line endings of archived research files.
+# Existing tracked report archives retain their historical line-ending policy.
+/results/** -text
+/reports/PPT/** -text
+/reports/Template/** -text
+/reports/paper/** -text
+/reports/resnet50_lmmd/** -text

@@ -1,0 +1,18 @@
+{
+  "setting": "local",
+  "training_complete": true,
+  "epochs_completed": 50,
+  "steps_completed": 300,
+  "selected_epoch": 50,
+  "selection_metric": "epoch_50_target_accuracy",
+  "final_source_accuracy": 0.9989350372736954,
+  "final_target_accuracy": 0.42138364779874216,
+  "final_target_macro_accuracy": 0.43219926953315735,
+  "best_target_accuracy": 0.4918238993710692,
+  "best_target_epoch": 21,
+  "best_metric_descriptive_only": true,
+  "optimizer_coverage_verified": true,
+  "target_training_labels_used": false,
+  "elapsed_seconds": 782.3132382000003,
+  "peak_gpu_memory_bytes": 1881069056
+}

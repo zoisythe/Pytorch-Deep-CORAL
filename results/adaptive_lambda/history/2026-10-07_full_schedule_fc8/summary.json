@@ -1,0 +1,16 @@
+{
+  "setting": "fc8_adaptive_lambda",
+  "epochs_completed": 50,
+  "steps_completed": 300,
+  "final_source_accuracy": 0.9992900248491303,
+  "final_target_accuracy": 0.5132075471698113,
+  "best_target_accuracy": 0.549685534591195,
+  "best_target_epoch": 28,
+  "initial_lambda": 0.5,
+  "final_lambda": 3.6446433067321777,
+  "minimum_lambda_used": 0.5,
+  "maximum_lambda_used": 3.634061336517334,
+  "elapsed_seconds": 840.710901100003,
+  "peak_gpu_memory_bytes": 1881104384,
+  "original_controls_unchanged": true
+}

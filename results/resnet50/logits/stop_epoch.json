@@ -1,0 +1,36 @@
+{
+  "epoch": 37,
+  "selection_metric": "training_stop",
+  "tie_break": null,
+  "phase": "fixed",
+  "metrics": {
+    "epoch": 37,
+    "train_steps": 24,
+    "bn_updates_per_module": 48,
+    "classification_loss": 0.051578964572399855,
+    "CORAL_loss": 0.0806874477614959,
+    "weighted_CORAL_loss": 0.04034372388074795,
+    "total_loss": 0.09192268922924995,
+    "CORAL_layer4": 0.003133992189153408,
+    "CORAL_pooled": 0.0002374668232126472,
+    "CORAL_logits": 0.0806874477614959,
+    "classification_loss_ema": 0.0522055710947764,
+    "weighted_CORAL_loss_ema": 0.040617823494899064,
+    "balance_gap": 0.22196381261379952,
+    "balance_raw_gap": 0.21782602238711735,
+    "balance_streak": 2,
+    "balance_stop": 1,
+    "source_accuracy": 0.9893503727369543,
+    "source_correct": 2787,
+    "source_samples": 2817,
+    "target_accuracy": 0.810062893081761,
+    "target_correct": 644,
+    "target_samples": 795
+  },
+  "files": [
+    "stop_epoch/metrics.csv",
+    "stop_epoch/source_predictions.csv",
+    "stop_epoch/target_predictions.csv",
+    "stop_epoch/evaluation.npz"
+  ]
+}

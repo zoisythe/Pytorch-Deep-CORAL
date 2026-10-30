@@ -1,0 +1,152 @@
+{
+  "original_directory": "C:\\Users\\Zoisythe\\Code\\Project\\Pytorch-Deep-CORAL\\results\\original",
+  "primary_source": "metrics.csv",
+  "historical_sampling_difference": false,
+  "comparison_scope": "All RNGs and loaders use seed 42; single-seed descriptive comparison.",
+  "reference_environment": {
+    "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+    "torch": "2.14.1+cu132",
+    "torchvision": "0.29.1+cu132",
+    "numpy": "2.5.3",
+    "cuda": "13.2",
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "deterministic_algorithms": true,
+    "tf32": false,
+    "cpu_threads": 1,
+    "cublas_workspace_config": ":4096:8",
+    "source_sha256": {
+      "src/core/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "src/core/coral.py": "062eccb0c9525aa3686137c9b4e87d4bc9a1eaabd21e878f14d4f29bc691100e",
+      "src/core/model.py": "429ec77f278bc43174dd54e8bd1ccc6649a99c8010ab564191cf6f0015297c82",
+      "src/data/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "src/data/compute_mean_std.py": "d3522a47cc427157a1374d0860864336fd4e50e5aec07a152b0df83ad5e2883c",
+      "src/data/data_loader.py": "e4e366c12527efe6493e9950a382c5ca82e0e22a17f01157edf022e35a6ca026",
+      "src/common/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "src/common/experiment_protocol.py": "682a5eb64379232de53f26c5924e72eca9b97674c58ecde9065cf4e1b02f2561",
+      "src/common/paths.py": "7dbf74e5cb33413f3de8b47d016429342d7114e7de8659fd6861868fc0d72634",
+      "src/common/utils.py": "21f33fa72e0fcd3f29708ac87b0cb7234d7d2d1237072becf59ce088d3849c78",
+      "src/training/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "src/training/run_experiments.py": "8099e15684428ef2586bba7b43b21a7bbb7572dfdda1598595afc88fb2d49d08",
+      "src/training/train.py": "3ca17919886d6f3242af6f388916fdc84ccc47ae15a3db1dc9f0d1091e53b5db"
+    }
+  },
+  "source_runs": [
+    {
+      "setting": "no_adaptation",
+      "directory": "C:\\Users\\Zoisythe\\Code\\Project\\Pytorch-Deep-CORAL\\results\\original\\no_adaptation",
+      "source_shuffle_seed": 42,
+      "target_shuffle_seed": 42,
+      "sampling_matches_original": true,
+      "schema_version": 3,
+      "input_sha256": {
+        "metrics.csv": "76cd9e2c39e7ebf27cd2cc644176b40af839d8f3f4695f2626e77fdde91ccbd2",
+        "config.json": "dfafb88a0b03ebcf88ee281fd97a2ee0a3b003f03da2de3d1e01e308c4bfd389",
+        "summary.json": "b72edad735c8531a5ef4ec3639ee9576ba3b108e5d7e2aa78768d464f2c25e42",
+        "environment.json": "68185df7b73a15adb19271f47875a110e7bc036cded49d13ad556724cd74213a"
+      },
+      "training_source_sha256": {
+        "src/core/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/core/coral.py": "062eccb0c9525aa3686137c9b4e87d4bc9a1eaabd21e878f14d4f29bc691100e",
+        "src/core/model.py": "429ec77f278bc43174dd54e8bd1ccc6649a99c8010ab564191cf6f0015297c82",
+        "src/data/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/data/compute_mean_std.py": "d3522a47cc427157a1374d0860864336fd4e50e5aec07a152b0df83ad5e2883c",
+        "src/data/data_loader.py": "e4e366c12527efe6493e9950a382c5ca82e0e22a17f01157edf022e35a6ca026",
+        "src/common/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/common/experiment_protocol.py": "682a5eb64379232de53f26c5924e72eca9b97674c58ecde9065cf4e1b02f2561",
+        "src/common/paths.py": "7dbf74e5cb33413f3de8b47d016429342d7114e7de8659fd6861868fc0d72634",
+        "src/common/utils.py": "21f33fa72e0fcd3f29708ac87b0cb7234d7d2d1237072becf59ce088d3849c78",
+        "src/training/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/training/run_experiments.py": "8099e15684428ef2586bba7b43b21a7bbb7572dfdda1598595afc88fb2d49d08",
+        "src/training/train.py": "3ca17919886d6f3242af6f388916fdc84ccc47ae15a3db1dc9f0d1091e53b5db"
+      }
+    },
+    {
+      "setting": "fc8",
+      "directory": "C:\\Users\\Zoisythe\\Code\\Project\\Pytorch-Deep-CORAL\\results\\original\\fc8",
+      "source_shuffle_seed": 42,
+      "target_shuffle_seed": 42,
+      "sampling_matches_original": true,
+      "schema_version": 3,
+      "input_sha256": {
+        "metrics.csv": "41a86b548f22d1af905271796a9f2b4d5fbe7cd793cb41ed18ec513c8d176a21",
+        "config.json": "2c6734591d2a4a50acd191674d73df997740b82341e18cbc67557759af2cd485",
+        "summary.json": "08198bdf47ac749293169fb38bb3a0a5c7ed5d9963d428f4fa91a689d62df5cf",
+        "environment.json": "68185df7b73a15adb19271f47875a110e7bc036cded49d13ad556724cd74213a"
+      },
+      "training_source_sha256": {
+        "src/core/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/core/coral.py": "062eccb0c9525aa3686137c9b4e87d4bc9a1eaabd21e878f14d4f29bc691100e",
+        "src/core/model.py": "429ec77f278bc43174dd54e8bd1ccc6649a99c8010ab564191cf6f0015297c82",
+        "src/data/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/data/compute_mean_std.py": "d3522a47cc427157a1374d0860864336fd4e50e5aec07a152b0df83ad5e2883c",
+        "src/data/data_loader.py": "e4e366c12527efe6493e9950a382c5ca82e0e22a17f01157edf022e35a6ca026",
+        "src/common/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/common/experiment_protocol.py": "682a5eb64379232de53f26c5924e72eca9b97674c58ecde9065cf4e1b02f2561",
+        "src/common/paths.py": "7dbf74e5cb33413f3de8b47d016429342d7114e7de8659fd6861868fc0d72634",
+        "src/common/utils.py": "21f33fa72e0fcd3f29708ac87b0cb7234d7d2d1237072becf59ce088d3849c78",
+        "src/training/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/training/run_experiments.py": "8099e15684428ef2586bba7b43b21a7bbb7572dfdda1598595afc88fb2d49d08",
+        "src/training/train.py": "3ca17919886d6f3242af6f388916fdc84ccc47ae15a3db1dc9f0d1091e53b5db"
+      }
+    },
+    {
+      "setting": "conv5",
+      "directory": "C:\\Users\\Zoisythe\\Code\\Project\\Pytorch-Deep-CORAL\\results\\conv5\\conv5",
+      "source_shuffle_seed": 42,
+      "target_shuffle_seed": 42,
+      "sampling_matches_original": true,
+      "schema_version": 3,
+      "input_sha256": {
+        "metrics.csv": "11f7227b868d63cb594debf0bde94052b272e79a232d4236adb2c146bc918cf8",
+        "config.json": "ae33751ea8aeef51186f5b3eaa055f4ee3a49d34e48338ee5b97c9d8d0540ee7",
+        "summary.json": "1ec02fd6d2123f375a4c1c2598f5cc21d27fd8ea3393aaaf565791ff5136119d",
+        "environment.json": "68185df7b73a15adb19271f47875a110e7bc036cded49d13ad556724cd74213a"
+      },
+      "training_source_sha256": {
+        "src/core/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/core/coral.py": "062eccb0c9525aa3686137c9b4e87d4bc9a1eaabd21e878f14d4f29bc691100e",
+        "src/core/model.py": "429ec77f278bc43174dd54e8bd1ccc6649a99c8010ab564191cf6f0015297c82",
+        "src/data/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/data/compute_mean_std.py": "d3522a47cc427157a1374d0860864336fd4e50e5aec07a152b0df83ad5e2883c",
+        "src/data/data_loader.py": "e4e366c12527efe6493e9950a382c5ca82e0e22a17f01157edf022e35a6ca026",
+        "src/common/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/common/experiment_protocol.py": "682a5eb64379232de53f26c5924e72eca9b97674c58ecde9065cf4e1b02f2561",
+        "src/common/paths.py": "7dbf74e5cb33413f3de8b47d016429342d7114e7de8659fd6861868fc0d72634",
+        "src/common/utils.py": "21f33fa72e0fcd3f29708ac87b0cb7234d7d2d1237072becf59ce088d3849c78",
+        "src/training/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/training/run_experiments.py": "8099e15684428ef2586bba7b43b21a7bbb7572dfdda1598595afc88fb2d49d08",
+        "src/training/train.py": "3ca17919886d6f3242af6f388916fdc84ccc47ae15a3db1dc9f0d1091e53b5db"
+      }
+    },
+    {
+      "setting": "conv5_fc8",
+      "directory": "C:\\Users\\Zoisythe\\Code\\Project\\Pytorch-Deep-CORAL\\results\\conv5\\conv5_fc8",
+      "source_shuffle_seed": 42,
+      "target_shuffle_seed": 42,
+      "sampling_matches_original": true,
+      "schema_version": 3,
+      "input_sha256": {
+        "metrics.csv": "e88c9f32840b2b3ea947daed9be8ca21177aa1077160e6767cba7e4a0a8cfa58",
+        "config.json": "ed2cca0eba59d5629688400158c852843bd7c5533c989e22101aa97d2151bcb3",
+        "summary.json": "2c4ea65d78edf715d66f5190d995b51c7c57d925daf88c339ee4e2aecc78f994",
+        "environment.json": "68185df7b73a15adb19271f47875a110e7bc036cded49d13ad556724cd74213a"
+      },
+      "training_source_sha256": {
+        "src/core/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/core/coral.py": "062eccb0c9525aa3686137c9b4e87d4bc9a1eaabd21e878f14d4f29bc691100e",
+        "src/core/model.py": "429ec77f278bc43174dd54e8bd1ccc6649a99c8010ab564191cf6f0015297c82",
+        "src/data/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/data/compute_mean_std.py": "d3522a47cc427157a1374d0860864336fd4e50e5aec07a152b0df83ad5e2883c",
+        "src/data/data_loader.py": "e4e366c12527efe6493e9950a382c5ca82e0e22a17f01157edf022e35a6ca026",
+        "src/common/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/common/experiment_protocol.py": "682a5eb64379232de53f26c5924e72eca9b97674c58ecde9065cf4e1b02f2561",
+        "src/common/paths.py": "7dbf74e5cb33413f3de8b47d016429342d7114e7de8659fd6861868fc0d72634",
+        "src/common/utils.py": "21f33fa72e0fcd3f29708ac87b0cb7234d7d2d1237072becf59ce088d3849c78",
+        "src/training/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "src/training/run_experiments.py": "8099e15684428ef2586bba7b43b21a7bbb7572dfdda1598595afc88fb2d49d08",
+        "src/training/train.py": "3ca17919886d6f3242af6f388916fdc84ccc47ae15a3db1dc9f0d1091e53b5db"
+      }
+    }
+  ]
+}

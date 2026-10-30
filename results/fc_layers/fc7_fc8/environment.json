@@ -1,0 +1,28 @@
+{
+  "python": "3.14.7 (main, Sep 29 2026, 15:00:37) [MSC v.1944 64 bit (AMD64)]",
+  "torch": "2.14.1+cu132",
+  "torchvision": "0.29.1+cu132",
+  "numpy": "2.5.3",
+  "cuda": "13.2",
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+  "deterministic_algorithms": true,
+  "tf32": false,
+  "cpu_threads": 1,
+  "cublas_workspace_config": ":4096:8",
+  "source_sha256": {
+    "src/core/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "src/core/coral.py": "062eccb0c9525aa3686137c9b4e87d4bc9a1eaabd21e878f14d4f29bc691100e",
+    "src/core/model.py": "429ec77f278bc43174dd54e8bd1ccc6649a99c8010ab564191cf6f0015297c82",
+    "src/data/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "src/data/compute_mean_std.py": "d3522a47cc427157a1374d0860864336fd4e50e5aec07a152b0df83ad5e2883c",
+    "src/data/data_loader.py": "e4e366c12527efe6493e9950a382c5ca82e0e22a17f01157edf022e35a6ca026",
+    "src/common/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "src/common/experiment_protocol.py": "682a5eb64379232de53f26c5924e72eca9b97674c58ecde9065cf4e1b02f2561",
+    "src/common/paths.py": "7dbf74e5cb33413f3de8b47d016429342d7114e7de8659fd6861868fc0d72634",
+    "src/common/utils.py": "21f33fa72e0fcd3f29708ac87b0cb7234d7d2d1237072becf59ce088d3849c78",
+    "src/training/__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "src/training/run_experiments.py": "8099e15684428ef2586bba7b43b21a7bbb7572dfdda1598595afc88fb2d49d08",
+    "src/training/train.py": "3ca17919886d6f3242af6f388916fdc84ccc47ae15a3db1dc9f0d1091e53b5db"
+  }
+}

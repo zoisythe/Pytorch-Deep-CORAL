@@ -1,0 +1,38 @@
+{
+  "mathematics": {
+    "passed": true,
+    "dtype": "float64",
+    "cases": 5,
+    "checks": [
+      "single_class_equals_global_coral",
+      "finite_feature_gradients",
+      "probability_weights_detached",
+      "connected_zero_and_missing_distances",
+      "single_samples_and_absent_classes",
+      "effective_sample_size_gate",
+      "all_target_images_contribute_soft_weights"
+    ]
+  },
+  "suite": {
+    "passed": true,
+    "runs": 5,
+    "epochs": 250,
+    "steps": 1500,
+    "class_rows": 46500,
+    "warmup_epochs_verified": 10,
+    "target_samples_per_epoch": 795,
+    "warmup_class_rows_verified_per_run": 1860,
+    "checks": [
+      "locked_protocol",
+      "warmup_equality",
+      "weight_schedule",
+      "class_support",
+      "loss_reductions",
+      "csv_log_npz_predictions",
+      "full_domain_accuracy",
+      "epoch_50_selection",
+      "matching_environments",
+      "paired_image_order"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+\section{LMMD 实验}
+
+\begin{frame}[t]{实验 DSAN 的 LMMD：AlexNet 与 ResNet-50}
+\small
+LMMD 沿用类别软权重，匹配同类样本的\textbf{核均值嵌入}：$\mathcal L=\CE+\lambda\M$。
+\vspace{2mm}
+\begin{tabularx}{\linewidth}{@{}P{26mm}YY@{}}
+\toprule
+ & AlexNet & ResNet-50 V2 \\
+\midrule
+对齐表示 & fc8：31 维 logits & 2048 $\to$ 256 bottleneck $\to$ 31；对齐 256 维 \\
+训练配置 & batch=128，6 步 / 轮 & batch=32，源域驱动 87 步 / 轮 \\
+适应项 & 前 10 轮 $0.5\G$；后 40 轮 $0.5\M$ & 无 CORAL 预热；$\lambda(e)$ 渐增至 0.5 \\
+学习率 & 0.001 / 0.01，固定 & 0.001 / 0.01 / 0.01，作者衰减 \\
+结果选择 & 固定第 50 轮 & 每轮目标评估选最佳；30 轮无提升停止 \\
+\bottomrule
+\end{tabularx}
+\vspace{3mm}
+两组均使用作者的\textbf{五核 RBF}与共享类别规则；ResNet 按作者代码使用裁剪 / 翻转且不加 Normalize。
+\src{reports/subdomain\_coral/lmmd/protocol.md；reports/resnet50\_lmmd/protocol.md。}
+\end{frame}

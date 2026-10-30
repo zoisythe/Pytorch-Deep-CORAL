@@ -1,0 +1,218 @@
+{
+  "prepared_on": "2026-10-30",
+  "experiment_evidence_through": "2026-10-12",
+  "training_performed": false,
+  "source_deck": "reports/PPT/2/main.pdf",
+  "sources": [
+    {
+      "snapshot": "data/alex_layers.csv",
+      "source": "reports/data/layer_results.csv",
+      "bytes": 1154
+    },
+    {
+      "snapshot": "data/alex_lambda.csv",
+      "source": "reports/data/lambda_results.csv",
+      "bytes": 834
+    },
+    {
+      "snapshot": "data/alex_epochs.csv",
+      "source": "reports/data/epoch_metrics.csv",
+      "bytes": 238937
+    },
+    {
+      "snapshot": "data/alex_steps.csv",
+      "source": "reports/data/step_metrics.csv",
+      "bytes": 558261
+    },
+    {
+      "snapshot": "data/alex_manifest.json",
+      "source": "reports/data/run_manifest.json",
+      "bytes": 49947
+    },
+    {
+      "snapshot": "data/early_stop.csv",
+      "source": "reports/data/early_stop_results.csv",
+      "bytes": 1006
+    },
+    {
+      "snapshot": "data/early_stop_grid.csv",
+      "source": "reports/data/early_stop_rule_comparison.csv",
+      "bytes": 8886
+    },
+    {
+      "snapshot": "data/early_stop_epochs.csv",
+      "source": "reports/data/early_stop_epochs.csv",
+      "bytes": 42322
+    },
+    {
+      "snapshot": "data/resnet_summary.csv",
+      "source": "reports/resnet50/summary.csv",
+      "bytes": 975
+    },
+    {
+      "snapshot": "data/resnet_epochs.csv",
+      "source": "reports/resnet50/epoch_metrics.csv",
+      "bytes": 125765
+    },
+    {
+      "snapshot": "data/subdomain_summary.csv",
+      "source": "reports/subdomain_coral/lmmd/summary.csv",
+      "bytes": 1173
+    },
+    {
+      "snapshot": "data/subdomain_epochs.csv",
+      "source": "reports/subdomain_coral/lmmd/epoch_metrics.csv",
+      "bytes": 249638
+    },
+    {
+      "snapshot": "data/subdomain_diagnostics.csv",
+      "source": "reports/subdomain_coral/analysis/diagnostics.csv",
+      "bytes": 6230
+    },
+    {
+      "snapshot": "data/subdomain_classes.csv",
+      "source": "reports/subdomain_coral/analysis/class_diagnostics.csv",
+      "bytes": 91557
+    },
+    {
+      "snapshot": "data/subdomain_pairs.csv",
+      "source": "reports/subdomain_coral/analysis/comparisons.csv",
+      "bytes": 573
+    },
+    {
+      "snapshot": "data/subdomain_phases.csv",
+      "source": "reports/subdomain_coral/analysis/training_phases.csv",
+      "bytes": 3955
+    },
+    {
+      "snapshot": "data/resnet_lmmd_epochs.csv",
+      "source": "reports/resnet50_lmmd/data/metrics.csv",
+      "bytes": 28736
+    },
+    {
+      "snapshot": "data/resnet_lmmd_summary.json",
+      "source": "reports/resnet50_lmmd/data/summary.json",
+      "bytes": 764
+    },
+    {
+      "snapshot": "data/experiment_inventory.csv",
+      "source": "reports/PPT/2/data/experiment_inventory.csv",
+      "bytes": 1568
+    },
+    {
+      "snapshot": "reference/main.pdf",
+      "source": "reports/PPT/2/main.pdf",
+      "bytes": 488691
+    },
+    {
+      "snapshot": "reference/deck_sources.json",
+      "source": "reports/PPT/2/data/sources.json",
+      "bytes": 4298
+    },
+    {
+      "snapshot": "reference/alex_report.md",
+      "source": "reports/2026-10-08-coral-experiments.md",
+      "bytes": 8299
+    },
+    {
+      "snapshot": "reference/subdomain_report.md",
+      "source": "reports/subdomain_coral/analysis/report.md",
+      "bytes": 28808
+    },
+    {
+      "snapshot": "reference/subdomain_protocol.md",
+      "source": "reports/subdomain_coral/protocol.md",
+      "bytes": 4666
+    },
+    {
+      "snapshot": "reference/alex_lmmd_protocol.md",
+      "source": "reports/subdomain_coral/lmmd/protocol.md",
+      "bytes": 4342
+    },
+    {
+      "snapshot": "reference/resnet_report.md",
+      "source": "reports/resnet50/report.md",
+      "bytes": 9804
+    },
+    {
+      "snapshot": "reference/resnet_lmmd_report.md",
+      "source": "reports/resnet50_lmmd/report.md",
+      "bytes": 5316
+    },
+    {
+      "snapshot": "reference/resnet_lmmd_protocol.md",
+      "source": "reports/resnet50_lmmd/protocol.md",
+      "bytes": 5335
+    },
+    {
+      "snapshot": "reference/coral.py",
+      "source": "src/core/coral.py",
+      "bytes": 2311
+    },
+    {
+      "snapshot": "reference/subdomain_coral.py",
+      "source": "src/core/subdomain_coral.py",
+      "bytes": 5075
+    },
+    {
+      "snapshot": "reference/lmmd.py",
+      "source": "src/core/lmmd.py",
+      "bytes": 5099
+    },
+    {
+      "snapshot": "reference/alexnet.py",
+      "source": "src/core/model.py",
+      "bytes": 2504
+    },
+    {
+      "snapshot": "reference/adaptive_weight.py",
+      "source": "src/experiments/adaptive_lambda/weight.py",
+      "bytes": 3206
+    },
+    {
+      "snapshot": "reference/alex_lmmd_author_validation.json",
+      "source": "reports/subdomain_coral/lmmd/author_validation.json",
+      "bytes": 446
+    },
+    {
+      "snapshot": "reference/resnet_lmmd_author_validation.json",
+      "source": "reports/resnet50_lmmd/author_validation.json",
+      "bytes": 488
+    },
+    {
+      "snapshot": "reference/subdomain_verification.json",
+      "source": "reports/subdomain_coral/verification.json",
+      "bytes": 965
+    },
+    {
+      "snapshot": "reference/geometry_verification.json",
+      "source": "reports/subdomain_coral/analysis/verification.json",
+      "bytes": 1118
+    },
+    {
+      "snapshot": "reference/resnet_lmmd_verification.json",
+      "source": "reports/resnet50_lmmd/data/verification.json",
+      "bytes": 1082
+    },
+    {
+      "snapshot": "reference/dsan_main.py",
+      "source": "reports/resnet50_lmmd/reference/main.py",
+      "bytes": 6269
+    },
+    {
+      "snapshot": "reference/dsan_model.py",
+      "source": "reports/resnet50_lmmd/reference/DSAN.py",
+      "bytes": 1183
+    },
+    {
+      "snapshot": "reference/dsan_data_loader.py",
+      "source": "reports/resnet50_lmmd/reference/data_loader.py",
+      "bytes": 915
+    },
+    {
+      "snapshot": "reference/dsan_lmmd.py",
+      "source": "reports/resnet50_lmmd/reference/lmmd.py",
+      "bytes": 3849
+    }
+  ]
+}

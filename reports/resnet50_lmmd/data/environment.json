@@ -1,0 +1,13 @@
+{
+  "python": "3.12.15 (main, Oct  9 2026, 15:21:55) [MSC v.1944 64 bit (AMD64)]",
+  "torch": "2.14.1+cu132",
+  "torchvision": "0.29.1+cu132",
+  "numpy": "2.5.3",
+  "cuda": "13.2",
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+  "deterministic_algorithms": true,
+  "tf32": false,
+  "cpu_threads": 1,
+  "cublas_workspace_config": ":4096:8"
+}

@@ -1,0 +1,10 @@
+{
+  "checked_on": "2026-10-30",
+  "sources": [
+    {"key": "sun2016deep", "url": "https://arxiv.org/abs/1607.01719", "full_text": "https://arxiv.org/pdf/1607.01719", "used_for": "CORAL formula, joint objective, and possible degenerate solutions under alignment alone"},
+    {"key": "chen2018gradnorm", "url": "https://proceedings.mlr.press/v80/chen18a.html", "used_for": "Primary bibliographic metadata and attribution of gradient balancing inspiration"},
+    {"key": "zhu2021dsan", "url": "https://arxiv.org/abs/2106.09388", "full_text": "https://arxiv.org/pdf/2106.09388", "used_for": "LMMD, bottleneck design, reported A-to-W 93.6 plus/minus 0.2 and three-run standard error"},
+    {"key": "gretton2012kernel", "url": "https://www.jmlr.org/papers/v13/gretton12a.html", "full_text": "https://www.jmlr.org/papers/volume13/gretton12a/gretton12a.pdf", "used_for": "Kernel mean embedding and population characteristic-kernel interpretation"},
+    {"key": "dsancode", "url": "https://github.com/easezyc/deep-transfer-learning/tree/master/UDA/pytorch1.0/DSAN", "evidence": "Local author source snapshot from 2026-10-12 in dsan_*.py; current remote code was not substituted", "used_for": "Actual kernel bandwidth, class support, source-driven loop, and preprocessing"}
+  ]
+}

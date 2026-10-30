@@ -1,0 +1,234 @@
+{
+  "previous_runs": [
+    {
+      "directory_before_rerun": "results/conv5/conv5",
+      "setting": "conv5",
+      "experiment_seed": 42,
+      "historical_target_loader_seed": 43,
+      "final_target_accuracy_before_rerun": 0.5031446540880503
+    },
+    {
+      "directory_before_rerun": "results/conv5/conv5_fc8",
+      "setting": "conv5_fc8",
+      "experiment_seed": 42,
+      "historical_target_loader_seed": 43,
+      "final_target_accuracy_before_rerun": 0.5509433962264151
+    },
+    {
+      "directory_before_rerun": "results/conv5/fc8",
+      "setting": "fc8",
+      "experiment_seed": 42,
+      "historical_target_loader_seed": 43,
+      "final_target_accuracy_before_rerun": 0.539622641509434
+    },
+    {
+      "directory_before_rerun": "results/conv5/no_adaptation",
+      "setting": "no_adaptation",
+      "experiment_seed": 42,
+      "historical_target_loader_seed": 43,
+      "final_target_accuracy_before_rerun": 0.46540880503144655
+    },
+    {
+      "directory_before_rerun": "results/fc_layers/fc6",
+      "setting": "fc6",
+      "experiment_seed": 42,
+      "historical_target_loader_seed": 43,
+      "final_target_accuracy_before_rerun": 0.44528301886792454
+    },
+    {
+      "directory_before_rerun": "results/fc_layers/fc6_fc7",
+      "setting": "fc6_fc7",
+      "experiment_seed": 42,
+      "historical_target_loader_seed": 43,
+      "final_target_accuracy_before_rerun": 0.45031446540880504
+    },
+    {
+      "directory_before_rerun": "results/fc_layers/fc6_fc7_fc8",
+      "setting": "fc6_fc7_fc8",
+      "experiment_seed": 42,
+      "historical_target_loader_seed": 43,
+      "final_target_accuracy_before_rerun": 0.5094339622641509
+    },
+    {
+      "directory_before_rerun": "results/fc_layers/fc6_fc8",
+      "setting": "fc6_fc8",
+      "experiment_seed": 42,
+      "historical_target_loader_seed": 43,
+      "final_target_accuracy_before_rerun": 0.5207547169811321
+    },
+    {
+      "directory_before_rerun": "results/fc_layers/fc7",
+      "setting": "fc7",
+      "experiment_seed": 42,
+      "historical_target_loader_seed": 43,
+      "final_target_accuracy_before_rerun": 0.4490566037735849
+    },
+    {
+      "directory_before_rerun": "results/fc_layers/fc7_fc8",
+      "setting": "fc7_fc8",
+      "experiment_seed": 42,
+      "historical_target_loader_seed": 43,
+      "final_target_accuracy_before_rerun": 0.539622641509434
+    },
+    {
+      "directory_before_rerun": "results/fc_layers/fc8",
+      "setting": "fc8",
+      "experiment_seed": 42,
+      "historical_target_loader_seed": 43,
+      "final_target_accuracy_before_rerun": 0.539622641509434
+    },
+    {
+      "directory_before_rerun": "results/fc_layers/no_adaptation",
+      "setting": "no_adaptation",
+      "experiment_seed": 42,
+      "historical_target_loader_seed": 43,
+      "final_target_accuracy_before_rerun": 0.46540880503144655
+    }
+  ],
+  "rerun_policy": "All ten settings will be rerun with every RNG seed=42; only original holds controls.",
+  "dataset_restoration": {
+    "restored_jpg_count": 4110,
+    "verification": "Exact SHA-256 matches to all preconversion JPG files"
+  },
+  "removed_artifacts": [
+    {
+      "path": "results/checkpoints/model_adaptation.pth",
+      "bytes": 228530105
+    },
+    {
+      "path": "results/checkpoints/model_no_adaptation.pth",
+      "bytes": 228530171
+    },
+    {
+      "path": "results/combined_experiments/accuracy_curves.svg",
+      "bytes": 99759
+    },
+    {
+      "path": "results/combined_experiments/coral_by_layer.svg",
+      "bytes": 110749
+    },
+    {
+      "path": "results/combined_experiments/final_target_comparison.svg",
+      "bytes": 28793
+    },
+    {
+      "path": "results/combined_experiments/loss_curves.svg",
+      "bytes": 101402
+    },
+    {
+      "path": "results/logs/log_adaptation.pth",
+      "bytes": 22231
+    },
+    {
+      "path": "results/logs/log_no_adaptation.pth",
+      "bytes": 22249
+    },
+    {
+      "path": "results/fc_layers/fc6/log.pth",
+      "bytes": 5461
+    },
+    {
+      "path": "results/fc_layers/fc6/model.pth",
+      "bytes": 228529031
+    },
+    {
+      "path": "results/fc_layers/fc6_fc7/log.pth",
+      "bytes": 5973
+    },
+    {
+      "path": "results/fc_layers/fc6_fc7/model.pth",
+      "bytes": 228529031
+    },
+    {
+      "path": "results/fc_layers/fc6_fc7_fc8/log.pth",
+      "bytes": 6421
+    },
+    {
+      "path": "results/fc_layers/fc6_fc7_fc8/model.pth",
+      "bytes": 228529031
+    },
+    {
+      "path": "results/fc_layers/fc6_fc8/log.pth",
+      "bytes": 5973
+    },
+    {
+      "path": "results/fc_layers/fc6_fc8/model.pth",
+      "bytes": 228529031
+    },
+    {
+      "path": "results/fc_layers/fc7/log.pth",
+      "bytes": 5461
+    },
+    {
+      "path": "results/fc_layers/fc7/model.pth",
+      "bytes": 228529031
+    },
+    {
+      "path": "results/fc_layers/fc7_fc8/log.pth",
+      "bytes": 5973
+    },
+    {
+      "path": "results/fc_layers/fc7_fc8/model.pth",
+      "bytes": 228529031
+    },
+    {
+      "path": "results/fc_layers/fc8/log.pth",
+      "bytes": 5461
+    },
+    {
+      "path": "results/fc_layers/fc8/model.pth",
+      "bytes": 228529031
+    },
+    {
+      "path": "results/fc_layers/no_adaptation/log.pth",
+      "bytes": 6421
+    },
+    {
+      "path": "results/fc_layers/no_adaptation/model.pth",
+      "bytes": 228529031
+    },
+    {
+      "path": "results/conv5/conv5/log.pth",
+      "bytes": 5973
+    },
+    {
+      "path": "results/conv5/conv5/model.pth",
+      "bytes": 228529031
+    },
+    {
+      "path": "results/conv5/conv5_fc8/log.pth",
+      "bytes": 5973
+    },
+    {
+      "path": "results/conv5/conv5_fc8/model.pth",
+      "bytes": 228529031
+    },
+    {
+      "path": "results/conv5/fc8/log.pth",
+      "bytes": 5973
+    },
+    {
+      "path": "results/conv5/fc8/model.pth",
+      "bytes": 228529031
+    },
+    {
+      "path": "results/conv5/no_adaptation/log.pth",
+      "bytes": 5973
+    },
+    {
+      "path": "results/conv5/no_adaptation/model.pth",
+      "bytes": 228529031
+    }
+  ],
+  "directory_moves": {
+    "results/layer_experiments": "results/fc_layers",
+    "results/conv5_experiments": "results/conv5"
+  },
+  "removed_seed_subdirectories": true,
+  "removed_duplicate_controls": [
+    "results/fc_layers/no_adaptation",
+    "results/fc_layers/fc8",
+    "results/conv5/no_adaptation",
+    "results/conv5/fc8"
+  ]
+}

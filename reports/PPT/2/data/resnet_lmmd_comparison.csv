@@ -1,0 +1,12 @@
+origin,method,metric,epoch,target_accuracy
+new_run,ResNet50 V2 + LMMD,selected_best,42,0.9371069182389937
+new_run,ResNet50 V2 + LMMD,training_stop,72,0.9358490566037736
+historical_coral_different_protocol,no_coral,training_stop,100,0.8
+historical_coral_different_protocol,logits,training_stop,37,0.810062893081761
+historical_coral_different_protocol,pooled,training_stop,100,0.8037735849056604
+historical_coral_different_protocol,pooled_logits,training_stop,42,0.8025157232704403
+historical_coral_different_protocol,layer4,training_stop,100,0.7987421383647799
+historical_coral_different_protocol,layer4_logits,training_stop,42,0.8176100628930818
+paper_three_trials,ResNet50 source-only,reported_mean,,0.684
+paper_three_trials,D-CORAL,reported_mean,,0.777
+paper_three_trials,DSAN,reported_mean,,0.936

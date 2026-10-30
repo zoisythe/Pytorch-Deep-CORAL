@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "training_performed": false,
+  "runs": 6,
+  "domain_samples": {
+    "source": 2817,
+    "target": 795
+  },
+  "representations": 2,
+  "diagnostic_rows": 12,
+  "class_rows": 372,
+  "numerical_errors": {
+    "covariance_distance_decomposition_error": 2.6645352591003757e-15,
+    "within_between_covariance_error": 7.815970093361102e-14,
+    "existing_diagnostic_error": 2.2737367544323206e-13,
+    "common_offset_probability_error": 4.440892098500626e-16
+  },
+  "mathematical_identities": {
+    "uniform_weight_covariance": 0.0,
+    "frozen_weight_covariance_scaling": 3.469446951953614e-18,
+    "frozen_weight_domain_translation": 8.881784197001252e-16,
+    "bandwidth_twice_trace": 0.0,
+    "frozen_weight_adaptive_rbf_scaling": 8.881784197001252e-16,
+    "linear_kernel_mean_expansion": 4.440892098500626e-16,
+    "weighted_coral_gradient_finite_difference": 4.631225958284801e-13
+  },
+  "paired_image_order_verified": true,
+  "prediction_csvs_verified": 12,
+  "normalized_diagnostic_missing": 0,
+  "target_labels_used": "evaluation_and_posthoc_diagnostics_only"
+}

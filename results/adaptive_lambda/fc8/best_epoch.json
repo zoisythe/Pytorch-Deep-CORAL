@@ -1,0 +1,41 @@
+{
+  "epoch": 37,
+  "selection_metric": "target_accuracy",
+  "tie_break": "earliest_epoch",
+  "phase": "fixed",
+  "metrics": {
+    "epoch": 37,
+    "train_steps": 6,
+    "classification_loss": 0.0908909762899081,
+    "CORAL_loss": 0.09669026732444763,
+    "CORAL_fc8": 0.09669026732444763,
+    "weighted_CORAL_loss": 0.048345133662223816,
+    "total_loss": 0.13923611243565878,
+    "lambda_used": 0.5,
+    "lambda_learning": 0.0,
+    "gradient_CE": 0.5115566601355871,
+    "gradient_CORAL": 0.5074991335471472,
+    "gradient_cosine": -0.45552485187848407,
+    "lambda_next": 0.5,
+    "gradient_CE_ema": 0.5395967861016592,
+    "gradient_CORAL_ema": 0.5327927668889364,
+    "weighted_gradient_CORAL_ema": 0.2663963834444682,
+    "weight_objective": 0.07472284510731697,
+    "lambda_min": 0.5,
+    "lambda_max": 0.5,
+    "lambda_end": 0.5,
+    "source_accuracy": 0.997515086971956,
+    "source_correct": 2810,
+    "source_samples": 2817,
+    "target_accuracy": 0.5421383647798742,
+    "target_correct": 431,
+    "target_samples": 795
+  },
+  "files": [
+    "best_epoch/metrics.csv",
+    "best_epoch/step_metrics.csv",
+    "best_epoch/source_predictions.csv",
+    "best_epoch/target_predictions.csv",
+    "best_epoch/evaluation.npz"
+  ]
+}

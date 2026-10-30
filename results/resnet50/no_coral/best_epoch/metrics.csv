@@ -1,0 +1,2 @@
+epoch,train_steps,bn_updates_per_module,classification_loss,CORAL_loss,weighted_CORAL_loss,total_loss,CORAL_layer4,CORAL_pooled,CORAL_logits,source_accuracy,source_correct,source_samples,target_accuracy,target_correct,target_samples
+22,24,48,0.10649731328400473,0.1722483355551958,0.0,0.10649731328400473,0.004323573152457054,0.00032734123548531596,0.5120940878987312,0.9783457578984736,2756,2817,0.8088050314465409,643,795

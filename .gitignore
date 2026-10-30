@@ -1,9 +1,36 @@
+# Local environments and tool caches
 .venv/
-amazon/
-dslr/
-webcam/
 __pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.cache/
+.ipynb_checkpoints/
 
-datasets/
-results/
+# Datasets and model weights stay local; experiment records are tracked
+/amazon/
+/dslr/
+/webcam/
+/datasets/
 *.pth
+*.pt
+*.ckpt
+*.safetensors
+
+# LaTeX intermediates; keep final PDFs, figures, data and training logs
+/reports/**/.build/
+/reports/**/*.aux
+/reports/**/*.bbl
+/reports/**/*.bcf
+/reports/**/*.blg
+/reports/**/*.fdb_latexmk
+/reports/**/*.fls
+/reports/**/main.log
+/reports/**/*.nav
+/reports/**/*.out
+/reports/**/*.run.xml
+/reports/**/*.snm
+/reports/**/*.synctex.gz
+/reports/**/*.toc
+/reports/**/*.vrb

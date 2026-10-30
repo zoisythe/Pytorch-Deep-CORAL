@@ -1,0 +1,37 @@
+{
+  "input_runs": {
+    "no_adaptation": {
+      "directory": "C:\\Users\\Zoisythe\\Code\\Project\\Pytorch-Deep-CORAL\\results\\original\\no_adaptation",
+      "selected_epoch": 3,
+      "input_files": [
+        "config.json",
+        "environment.json",
+        "summary.json",
+        "metrics.csv"
+      ]
+    },
+    "fc8_fixed": {
+      "directory": "C:\\Users\\Zoisythe\\Code\\Project\\Pytorch-Deep-CORAL\\results\\original\\fc8",
+      "selected_epoch": 37,
+      "input_files": [
+        "config.json",
+        "environment.json",
+        "summary.json",
+        "metrics.csv"
+      ]
+    },
+    "fc8_adaptive": {
+      "directory": "C:\\Users\\Zoisythe\\Code\\Project\\Pytorch-Deep-CORAL\\results\\adaptive_lambda\\fc8",
+      "selected_epoch": 37,
+      "input_files": [
+        "config.json",
+        "environment.json",
+        "summary.json",
+        "metrics.csv"
+      ]
+    }
+  },
+  "selection_metric": "best_target_accuracy",
+  "seed": 42,
+  "original_controls_retrained": false
+}

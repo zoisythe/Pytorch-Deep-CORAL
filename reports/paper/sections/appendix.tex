@@ -1,0 +1,97 @@
+\section{指标定义与训练配方}
+
+\subsection{分类与几何指标}
+
+目标准确率为 $N_t^{-1}\sum_j\mathbf1[\hat y_j=y_j]$，宏平均类别准确率先计算各类正确比例，再对 31 类等权平均。每一张目标图像对应约 $0.126\pp$。历史最佳值并列时取最早轮次。
+
+令 $\widehat C_d^c,\widehat\mu_d^c$ 为冻结模型在全域真实类别 $c$ 上的普通样本协方差和均值，表\ref{tab:geometry}的指标为
+\begin{align*}
+ D_C&=\frac1{31}\sum_{c=1}^{31}\frac{\norm{\widehat C_s^c-\widehat C_t^c}_F^2}{4D^2},\\
+ D_{\rm dir}&=\frac1{31}\sum_{c=1}^{31}
+ \left(1-\frac{\langle\widehat\mu_s^c,\widehat\mu_t^c\rangle}
+ {\norm{\widehat\mu_s^c}_2\norm{\widehat\mu_t^c}_2}\right),\\
+ Q&=\frac1{31}\sum_{c=1}^{31}\sum_{j:y_j^t=c}
+       \frac{p_{jc}}{\sum_rp_{rc}}.
+\end{align*}
+这些真实类诊断不同于训练时的软分组损失。$Q$ 表示每个预测软类别总权重中落在真实同类上的比例。余弦指标遇到零范数时按缺失记录；本表三组没有该类缺失。协方差形状距离以协方差矩阵的 Frobenius 内积定义对应余弦距离。
+
+原始 logits 为 $z$，去共同偏移表示为 $\widetilde z=z-\mathbf1(\mathbf1^\top z)/D$，保持 softmax 概率与预测不变。归一化 margin 为
+\begin{equation*}
+ m(z,y)=\frac{z_y-\max_{c\ne y}z_c}{\norm{\widetilde z}_2}.
+\end{equation*}
+本文用其在目标域的中位数描述分类几何。协方差有效秩为 $\exp(-\sum_r q_r\log q_r)$，其中 $q_r$ 是非负特征值按和归一化后的谱权重；它描述谱的分散程度，不是语义类别数。
+
+\subsection{LMMD 核与 ResNet 调度}
+
+拼接一个源目标批次得到 $u_1,\ldots,u_n$，归档实现使用
+\begin{equation*}
+ b=\max\!\left(\sg\!\left[\frac{\sum_{r\ne q}\norm{u_r-u_q}_2^2}{n(n-1)}\right],10^{-12}\right),
+ \qquad k(x,y)=\sum_{h=0}^{4}\exp\!\left(-\frac{\norm{x-y}_2^2}{b2^{h-2}}\right).
+\end{equation*}
+五核直接相加，不除以核数；无共享类时返回与特征梯度连接的零损失。作者损失的归档数值核验中，AlexNet 31 维对照损失误差为 0、最大特征梯度误差约 $2.24\times10^{-8}$；ResNet 256 维对照相应为 0 与 $5.82\times10^{-10}$。这些是既有实现核验，不是本次论文整理中新执行的训练。
+
+ResNet LMMD 第 $e$ 轮的计划预算 $E=200$，学习率与适应权重为
+\begin{equation*}
+ \eta_g(e)=\frac{\eta_{g,0}}{(1+10(e-1)/200)^{0.75}},\qquad
+ \lambda(e)=0.5\left(\frac{2}{1+\exp(-10e/200)}-1\right).
+\end{equation*}
+主干基础学习率为 0.001，bottleneck 与分类头为 0.01；SGD momentum=0.9，weight decay=$5\times10^{-4}$。作者循环保留 $\operatorname{range}(1,\operatorname{len}(\text{source loader}))$ 的行为，因此 88 个源完整批次对应 87 次更新。该轮定义不同于较短域配对的 24 步/轮。
+
+\begin{table}[H]
+ \centering\small
+ \caption{跨阶段协议对照。第 4 列的选轮使用目标真实标签。所有 ResNet 组共享源、目标 BN；AlexNet 没有 BN。}
+ \label{tab:protocol}
+ \begin{tabularx}{\linewidth}{lYYY}
+ \toprule
+ 项目 & AlexNet 子域六组 & ResNet CORAL & ResNet LMMD\\
+ \midrule
+ 对齐表示 & 31 维 fc8 & pooled / layer4 / logits & 256 维 bottleneck\\
+ batch / 每轮更新 & 128 / 6 & 32 / 24 & 32 / 87\\
+ 训练输入 & Resize 与按域归一化 & Resize 与按域归一化 & 裁剪、翻转，无 Normalize\\
+ 学习率 & 固定 & 固定 & 按轮衰减\\
+ 适应权重 & 十轮预热后固定 & 固定 0.5 & 预设渐增\\
+ 报告轮次 & 固定第 50 轮 & 训练损失停止轮 & 目标准确率最佳轮及停止轮\\
+ \bottomrule
+ \end{tabularx}
+\end{table}
+
+\section{归档运行清单与证据索引}
+
+以下按运行而非展示表计数。第一部分的 fc8 同时出现在权重表中，不重复计数；子域实验另行训练的对照属于独立运行。清单共 27 组，其中 AlexNet CORAL/权重 14 组、ResNet CORAL 6 组、AlexNet 子域 6 组、ResNet LMMD 1 组。轮数记录实际完成长度；ResNet LMMD 的最佳轮为 42，而实际运行至 72。
+
+\begingroup\scriptsize
+\begin{longtable}{r p{29mm} p{69mm} rr}
+\caption{全部归档运行及计算长度。}\label{tab:inventory}\\
+\toprule
+序号 & 实验族 & 运行标识 & 轮数 & 更新数\\
+\midrule
+\endfirsthead
+\toprule 序号 & 实验族 & 运行标识 & 轮数 & 更新数\\\midrule
+\endhead
+\bottomrule\endfoot
+\InventoryRows
+\end{longtable}
+\endgroup
+
+本文基于 20 页汇报 \file{reports/PPT/2/main.pdf} 及其对应的 CSV、JSON、实验报告与实现整理。论文目录保留直接使用的 42 份输入快照，\file{data/sources.json} 记录仓库源路径与字节数；\file{reference/main.pdf} 保留汇报原件。正文图表由本地快照重绘，输入对应关系见 \file{data/figure_sources.json}。
+
+\begin{table}[H]
+ \centering\small
+ \caption{论文目录内的主要证据。路径相对 \file{report/paper/}。}
+ \begin{tabularx}{\linewidth}{lY}
+ \toprule
+ 证据类别 & 文件与用途\\
+ \midrule
+ 多层与权重 & \file{data/alex_layers.csv}、\file{data/alex_lambda.csv}、\file{data/alex_epochs.csv}、\file{data/alex_steps.csv}\\
+ 固定权重回放 & \file{data/early_stop.csv}、\file{data/early_stop_grid.csv}、\file{data/early_stop_epochs.csv}\\
+ ResNet CORAL & \file{data/resnet_summary.csv}、\file{data/resnet_epochs.csv}\\
+ 子域分类对照 & \file{data/subdomain_summary.csv}、\file{data/subdomain_epochs.csv}、\file{data/subdomain_pairs.csv}\\
+ 子域诊断 & \file{data/subdomain_diagnostics.csv}、\file{data/subdomain_classes.csv}、\file{data/subdomain_phases.csv}\\
+ ResNet LMMD & \file{data/resnet_lmmd_summary.json}、\file{data/resnet_lmmd_epochs.csv}\\
+ 公式与原协议 & \file{reference/} 中的损失实现、作者代码快照、历史协议及实验报告\\
+ 本次整理核验 & \file{data/validation.json}、\file{data/document_validation.json}\\
+ \bottomrule
+ \end{tabularx}
+\end{table}
+
+本次整理重新核对了结果表的正确数与准确率、AlexNet 最终与最佳轮记录、前 49 轮固定/自适应共同轨迹、首次损失平衡停止轮，以及 ResNet 同轮基线差值。历史模型推理与梯度公式核验的证据沿用归档 JSON，来源在清单中列明；没有重新训练、重载模型或重算全域 logits。\file{README.md} 说明材料结构和构建命令，\file{scripts/prepare.py} 从冻结证据重绘图表，不调用训练模块。

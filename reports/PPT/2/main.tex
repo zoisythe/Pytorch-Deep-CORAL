@@ -1,0 +1,68 @@
+% !TeX program = lualatex
+\documentclass[10pt,xcolor=dvipsnames,aspectratio=169]{beamer}
+\usepackage{fontspec}
+\usepackage[fontset=fandol,scheme=plain]{ctex}
+\usetheme[progressbar=frametitle,sectionpage=none,numbering=fraction]{metropolis}
+% Preserve the supplied template's typography when Fira is installed.
+% TeX Gyre Heros is the portable fallback used by this build.
+\IfFontExistsTF{Fira Sans}{%
+  \setsansfont{Fira Sans}[BoldFont={Fira Sans Medium}]
+}{%
+  \setsansfont{texgyreheros-regular.otf}[
+    BoldFont=texgyreheros-bold.otf,ItalicFont=texgyreheros-italic.otf,
+    BoldItalicFont=texgyreheros-bolditalic.otf]
+}
+\setmonofont{Latin Modern Mono}[Scale=MatchLowercase]
+\usepackage{microtype,graphicx,booktabs,tabularx,amsmath,amssymb,amsfonts,amsthm,bm,mathtools}
+\providecommand{\mathds}{\mathbb}
+\usepackage{tikz,pgfplots}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds}
+\input{setup-colors.tex}
+\makeatletter
+\input{setup-beamer.tex}
+\makeatother
+\input{setup-math.tex}
+\input{setup-plots.tex}
+\input{data/tables.tex}
+
+\setbeamersize{text margin left=8mm,text margin right=8mm}
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+\setbeamerfont{title}{size=\LARGE,series=\bfseries}
+\setbeamerfont{subtitle}{size=\normalsize}
+\setbeamerfont{block title}{size=\normalsize,series=\bfseries}
+\setbeamerfont{block body}{size=\small}
+\setbeamerfont{footnote}{size=\tiny}
+\setbeamercolor{alerted text}{fg=plot0}
+\setbeamercolor{progress bar}{fg=accent,bg=bgcolorAlt}
+\setbeamertemplate{navigation symbols}{}
+\hypersetup{colorlinks=true,urlcolor=plot0,linkcolor=plot0,pdftitle={从全局统计到类别几何：Deep CORAL 与子域对齐实验汇报},pdfauthor={张以禾}}
+\graphicspath{{figures/}}
+\newcommand{\src}[1]{\par\vfill{\fontsize{5.5}{6.4}\selectfont\color{fgcolor!65}来源：#1\par}\vspace{-1mm}}
+\newcommand{\takeaway}[1]{\par\vspace{1mm}{\color{plot0}\bfseries #1}\par}
+\newcommand{\fullfig}[1]{\centering\includegraphics[width=\linewidth,height=.69\textheight,keepaspectratio]{#1}}
+\newcommand{\smallfig}[2][.56]{\centering\includegraphics[width=\linewidth,height=#1\textheight,keepaspectratio]{#2}}
+\newcommand{\G}{\mathcal L_{\mathrm{G}}}
+\newcommand{\LC}{\mathcal L_{\mathrm{C}}}
+\newcommand{\M}{\mathcal L_{\mathrm{LMMD}}}
+\newcommand{\CE}{\mathcal L_{\mathrm{CE}}}
+\newcommand{\sg}{\operatorname{sg}}
+\newcommand{\ESS}{\operatorname{ESS}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\tikzset{box/.style={draw=plot0!25,fill=bgcolorAlt,rounded corners=1.5mm,align=center,inner sep=2mm,font=\small},
+  flow/.style={-{Stealth[length=2mm]},thick,draw=plot0},
+  tag/.style={font=\scriptsize,align=center,text=fgcolor}}
+\title{从全局统计到类别几何}
+\subtitle{Deep CORAL、子域对齐与 LMMD / DSAN 的实验探索}
+\author{张以禾}
+\institute{Office-31 · Amazon $\rightarrow$ Webcam}
+\date{2026 年 10 月 16 日}
+
+\begin{document}
+\maketitle
+\input{slides/02-coral.tex}
+\input{slides/03-subdomain.tex}
+\input{slides/04-lmmd.tex}
+\input{slides/05-dsan.tex}
+\input{slides/06-analysis.tex}
+\end{document}

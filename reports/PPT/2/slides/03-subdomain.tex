@@ -1,0 +1,69 @@
+\section{CORAL 子域对齐}
+
+\begin{frame}[t]{子域对齐：分别匹配同一类别的两域分布}
+\small
+第 $c$ 类子域为源域与目标域中属于该类别的样本；目标类别由模型概率估计。
+\[
+\text{全局对齐：}\mathcal D(P_s,P_t)
+\qquad\longrightarrow\qquad
+\text{子域对齐：}\frac1C\sum_{c=1}^{C}\mathcal D(P_s^c,P_t^c).
+\]
+\begin{columns}[T,onlytextwidth]
+\column{.48\textwidth}
+\begin{block}{全局统计混合了什么？}
+整体协方差同时包含类内变化和类间中心结构。\par
+不同类别的域偏移可能相互掩盖。
+\end{block}
+\column{.48\textwidth}
+\begin{block}{子域对齐匹配什么？}
+源域类别 $c$ 对应目标域类别 $c$，分别建立统计量并对齐。\par
+目标域使用软类别权重，而非真实标签。
+\end{block}
+\end{columns}
+\[
+\mathcal L=\CE+\lambda\,\mathbb E_c[\mathcal D(P_s^c,P_t^c)].
+\]
+\src{\href{https://arxiv.org/pdf/2106.09388}{DSAN，第 III 节}：按类别划分相关子域。}
+\end{frame}
+
+\begin{frame}[t]{参考 DSAN 实现 CORAL 子域对齐}
+\small
+借用 DSAN 的类别软权重，将其统计目标替换为\textbf{逐类协方差差异}：
+\[
+p_{jc}=\sg[\operatorname{softmax}(z_j^t)_c],\quad
+a^s_{ic}=\frac{\mathbf1[y_i^s=c]}{\sum_r\mathbf1[y_r^s=c]},\quad
+a^t_{jc}=\frac{p_{jc}}{\sum_rp_{rc}}.
+\]
+\[
+\mu_d^c=\sum_i a^d_{ic}z_i^d,\qquad
+C_d^c=\frac{\sum_i a^d_{ic}(z_i^d-\mu_d^c)(z_i^d-\mu_d^c)^\top}{1-\sum_i(a^d_{ic})^2}.
+\]
+\[
+\boxed{\LC=\frac1{|\mathcal V|}\sum_{c\in\mathcal V}\frac{\norm{C_s^c-C_t^c}_F^2}{4D^2}}.
+\]
+\begin{itemize}
+  \item AlexNet fc8 的 31 维 logits；目标权重 detach，特征路径反传。
+  \item 有效类要求：源支持 $\ge2$、目标 top-1 支持 $\ge2$、目标 ESS $\ge2$。
+\end{itemize}
+\src{src/core/subdomain\_coral.py；类别权重参考 DSAN，协方差目标为本实验自定义。}
+\end{frame}
+
+\begin{frame}[t]{CORAL 子域对齐：未产生正向效果}
+\small
+统一初始化、batch=128；适应组前十轮均使用 $0.5\G$，第 11 轮切换。
+\vspace{2mm}
+\begin{tabularx}{\linewidth}{@{}Ycr@{}}
+\toprule
+配置 & 第 11--50 轮适应项 & 第 50 轮正确率 \\
+\midrule
+\SubRows
+\bottomrule
+\end{tabularx}
+\vspace{3mm}
+\begin{itemize}
+  \item local 相对 global \textbf{下降 11.70 pp}。
+  \item mixed 在保留全局系数 0.25 的情况下，仍比 global\_quarter \textbf{低 4.53 pp}。
+\end{itemize}
+\takeaway{更细的类别划分没有改善分类，直接沿用类内协方差目标反而损害正确率。}
+\src{reports/subdomain\_coral/lmmd/summary.csv；均为固定第 50 轮结果。}
+\end{frame}

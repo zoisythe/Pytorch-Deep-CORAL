@@ -1,0 +1,21 @@
+{
+  "training_complete": true,
+  "setting": "resnet50_v2_lmmd_author_code",
+  "epochs_completed": 72,
+  "steps_completed": 6264,
+  "stop_reason": "target_accuracy_patience",
+  "selected_epoch": 42,
+  "selected_target_accuracy": 0.9371069182389937,
+  "selection_metric": "best_target_accuracy_earliest_tie",
+  "stop_epoch": 72,
+  "stop_target_accuracy": 0.9358490566037736,
+  "stop_source_accuracy": 0.9882854100106496,
+  "target_labels_in_loss": false,
+  "target_labels_in_selection_and_stopping": true,
+  "optimizer_coverage_verified": true,
+  "bottleneck_gradient_verified": true,
+  "batchnorm_training_verified": true,
+  "batchnorm_evaluation_verified": true,
+  "elapsed_seconds": 5279.718999999999,
+  "peak_gpu_memory_bytes": 5854009344
+}

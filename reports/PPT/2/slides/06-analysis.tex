@@ -1,0 +1,124 @@
+\section{LMMD 的理论优势与反思}
+
+\begin{frame}[t]{LMMD 的设计：类别条件下的核均值匹配}
+\small
+令 $k(x,y)=\langle\phi(x),\phi(y)\rangle_{\mathcal H}$，同类两域的核均值差为
+\[
+\boxed{\M=\frac1{|\mathcal U|}\sum_{c\in\mathcal U}
+\left\|\sum_i a^s_{ic}\phi(z_i^s)-\sum_j a^t_{jc}\phi(z_j^t)\right\|_{\mathcal H}^2}.
+\]
+将平方范数展开，得到实际计算形式：
+\[
+\begin{aligned}
+M_c={}&\sum_{i,i'}a^s_{ic}a^s_{i'c}k(z_i^s,z_{i'}^s)
++\sum_{j,j'}a^t_{jc}a^t_{j'c}k(z_j^t,z_{j'}^t)\\
+&-2\sum_{i,j}a^s_{ic}a^t_{jc}k(z_i^s,z_j^t),\qquad
+\M=\frac1{|\mathcal U|}\sum_cM_c.
+\end{aligned}
+\]
+\begin{itemize}
+  \item 前两项描述域内相似度，交叉项拉近跨域的同类核分布。
+  \item $\mathcal U$ 为源真实类别与目标 top-1 类别的交集；域内求和包含对角线。
+\end{itemize}
+\src{\href{https://arxiv.org/pdf/2106.09388}{DSAN，Eq. (5)--(8)}；作者 LMMD 实现。}
+\end{frame}
+
+\begin{frame}[t]{区别一：协方差遗漏类别中心，LMMD 能感知位置差异}
+\small
+固定类别权重时，逐域平移不改变类内协方差：
+\[
+C_a(Z+\mathbf1v^\top)=C_a(Z).
+\]
+因此，两域同类可以具有\textbf{相同协方差、不同中心}，而 $\LC=0$。
+\vspace{2mm}
+\begin{block}{核均值会检测这种差异}
+线性核下：$M_c=\norm{\mu_s^c-\mu_t^c}_2^2$。\par\vspace{2mm}
+单核 RBF 下，以集中在 $u\ne v$ 的同类分布为例：
+\[
+M_c=k(u,u)+k(v,v)-2k(u,v)
+=2\bigl(1-e^{-\norm{u-v}^2/\beta}\bigr)>0.
+\]
+\end{block}
+\takeaway{子域 CORAL 对“类别放在哪里”没有直接约束；LMMD 保留了这类位置信息。}
+\src{基于两种实际目标函数的推导；$\beta>0$，同类分布的示例用于说明中心差异。}
+\end{frame}
+
+\begin{frame}[t]{区别二：RBF 核比较的结构比二阶协方差更充分}
+\small
+类条件 CORAL 只匹配\textbf{中心化二阶矩}，相同均值 / 协方差仍可对应不同分布。
+\[
+e^{-\norm{x-y}^2/\beta}
+=e^{-\norm x^2/\beta}e^{-\norm y^2/\beta}
+\sum_{r=0}^{\infty}\frac{(2/\beta)^r}{r!}(x^\top y)^r.
+\]
+RBF 核使用无限维非线性特征，能够区分均值、协方差以外的分布结构。
+\begin{block}{总体层面的可识别性}
+固定带宽的高斯核是特征核（characteristic kernel）：
+\[
+\operatorname{MMD}_k^2(P,Q)=0\quad\Longleftrightarrow\quad P=Q.
+\]
+\end{block}
+\takeaway{同样按类别分组，LMMD 匹配的是更完整的分布信息，而非仅类内波动。}
+\src{\href{https://www.jmlr.org/papers/v13/gretton12a.html}{Gretton et al., A Kernel Two-Sample Test (2012), \S2}；DSAN。}
+\end{frame}
+
+\begin{frame}[t]{区别三：自适应带宽弱化“只缩小幅度”的捷径}
+\small
+拼接两域批次为 $u_1,\ldots,u_n$，作者使用五个核之和：
+\[
+b_0=\frac{\sum_{r\ne q}\norm{u_r-u_q}^2}{n(n-1)},\quad b=\max(\sg[b_0],10^{-12}),\quad
+k(x,y)=\sum_{h=0}^{4}e^{-\norm{x-y}^2/(b2^{h-2})}.
+\]
+固定类别权重，共同缩放 $Z\mapsto sZ$，且每批同步重估带宽：
+\[
+\LC(sZ_s,sZ_t)=s^4\LC(Z_s,Z_t),\qquad
+\frac{\norm{sx-sy}^2}{s^2b}=\frac{\norm{x-y}^2}{b}.
+\]
+\begin{itemize}
+  \item CORAL 的绝对距离可以仅因特征收缩而迅速减小。
+  \item 带宽下限未触发时，LMMD 的核值对共同正缩放保持不变；五核同时覆盖多个距离尺度。
+  \item 这是重估带宽后的前向性质；实现中带宽 detach，目标 softmax 仍每批更新。
+\end{itemize}
+\takeaway{LMMD 不会仅因为两域特征一起变小，就在前向数值上得到更好的对齐值。}
+\src{作者 LMMD 带宽 $b/4,b/2,b,2b,4b$；缩放推导以固定权重与正缩放为条件。}
+\end{frame}
+
+\begin{frame}[t]{区别四：LMMD 更适合类别支持稀疏的小批次}
+\small
+\begin{tabularx}{\linewidth}{@{}P{28mm}YY@{}}
+\toprule
+ & 自实现子域 CORAL & LMMD 作者规则 \\
+\midrule
+需要估计的统计量 & 每类协方差及有限样本修正 & 每类加权核均值 \\
+源域 / 目标支持 & 各至少 2 个支持样本 & 共享类各至少 1 个即可 \\
+权重集中度限制 & 目标 ESS $\ge2$ & 无 ESS 门槛 \\
+批内类别利用 & 先过滤协方差不可靠的类别 & 可利用单样本共享类 \\
+\bottomrule
+\end{tabularx}
+\vspace{3mm}
+\begin{itemize}
+  \item 类别较多、batch 较小时，LMMD 不必依赖稳定的逐类协方差估计。
+  \item 相同 $\lambda$ 不代表相同梯度强度；本轮两种目标的支持规则、带宽与优化尺度同时不同。
+\end{itemize}
+\takeaway{LMMD 的优势同时来自统计目标和可用类别范围。}
+\src{src/core/subdomain\_coral.py；src/core/lmmd.py。}
+\end{frame}
+
+\begin{frame}[t]{反思：子域划分不够，还要选对统计目标}
+\small
+\begin{tabularx}{\linewidth}{@{}Yrrrr@{}}
+\toprule
+方法 & 正确率 & 类内协方差距离 & 类中心方向距离 & 软权重纯度 \\
+\midrule
+\GeometryRows
+\bottomrule
+\end{tabularx}
+\vspace{2mm}
+\begin{itemize}
+  \item 子域 CORAL 的协方差距离最小，正确率却最低；\textbf{更小的二阶差异不是更好的分类}。
+  \item LMMD 的中心方向更接近、软分组更准确，与其更充分的分布约束相符。
+  \item LMMD 仍要与 CE 联合：全体特征完全相同也会使其为零；类别判别性由分类约束共同维持。
+\end{itemize}
+\takeaway{本轮有效的是“类别软分组 + 核分布匹配 + 源域判别”，而非单独把全局 CORAL 拆成逐类 CORAL。}
+\src{固定第 50 轮事后诊断；方向距离越低越接近，纯度越高越好；目标真值仅用于这些诊断。}
+\end{frame}

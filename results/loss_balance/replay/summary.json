@@ -1,0 +1,63 @@
+{
+  "execution_mode": "historical_log_replay",
+  "training_performed": false,
+  "rule": {
+    "tolerance": 0.25,
+    "patience": 2,
+    "min_epochs": 20,
+    "ema_decay": 0.5,
+    "require_raw_and_ema_balance": true
+  },
+  "runs": [
+    {
+      "source_run": "C:\\Users\\Zoisythe\\Code\\Project\\Pytorch-Deep-CORAL\\results\\original\\fc8",
+      "execution_mode": "historical_log_replay",
+      "log_metrics_checked": true,
+      "lambda_coral": 0.5,
+      "recorded_epochs": 50,
+      "triggered": false,
+      "stop_epoch": null,
+      "epochs_observed": 50,
+      "stop_balance_gap": 0.3166217534199531,
+      "stop_balance_raw_gap": 0.3657986847568778,
+      "last_observed_target_accuracy": 0.5421383647798742,
+      "best_observed_target_accuracy": 0.5421383647798742,
+      "best_observed_epoch": 37,
+      "full_best_target_accuracy": 0.5421383647798742,
+      "full_best_epoch": 37,
+      "best_accuracy_lost_pp": 0.0,
+      "recording_end_balance_gap": 0.3166217534199531,
+      "recording_end_classification_loss": 0.06504627379278342,
+      "recording_end_weighted_CORAL_loss": 0.04125243239104748,
+      "recording_end_ema_weighted_ratio": 0.6833782465800469,
+      "full_best_balance_gap": 0.4583468013288003,
+      "epochs_saved_within_recording": 0,
+      "balance_metrics": "1_fc8_balance.csv"
+    },
+    {
+      "source_run": "C:\\Users\\Zoisythe\\Code\\Project\\Pytorch-Deep-CORAL\\results\\fixed_lambda\\conv5_fc8",
+      "execution_mode": "historical_log_replay",
+      "log_metrics_checked": true,
+      "lambda_coral": 0.5,
+      "recorded_epochs": 100,
+      "triggered": true,
+      "stop_epoch": 58,
+      "epochs_observed": 58,
+      "stop_balance_gap": 0.15719632848687667,
+      "stop_balance_raw_gap": 0.13168548481554654,
+      "last_observed_target_accuracy": 0.5647798742138365,
+      "best_observed_target_accuracy": 0.5647798742138365,
+      "best_observed_epoch": 58,
+      "full_best_target_accuracy": 0.5647798742138365,
+      "full_best_epoch": 58,
+      "best_accuracy_lost_pp": 0.0,
+      "recording_end_balance_gap": 0.023603270683448137,
+      "recording_end_classification_loss": 0.02924637993176778,
+      "recording_end_weighted_CORAL_loss": 0.030954846180975437,
+      "recording_end_ema_weighted_ratio": 1.0241738526715156,
+      "full_best_balance_gap": 0.15719632848687667,
+      "epochs_saved_within_recording": 42,
+      "balance_metrics": "2_conv5_fc8_balance.csv"
+    }
+  ]
+}

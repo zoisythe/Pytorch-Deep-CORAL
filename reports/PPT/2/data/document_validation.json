@@ -1,0 +1,22 @@
+{
+  "revision_date": "2026-10-16",
+  "pdf_pages": 20,
+  "appendix_pages": 0,
+  "figures": 5,
+  "source_snapshots": 27,
+  "template_setup_files_unchanged": true,
+  "overfull_or_underfull_boxes": 0,
+  "missing_characters": 0,
+  "classification_display": "accuracy_percent_only",
+  "correct_or_error_image_counts_displayed": false,
+  "reproduction": "one result image with heading Deep CORAL 原实验复现",
+  "stopping_condition": "one page without images",
+  "intro_pages_removed": true,
+  "future_outlook_removed": true,
+  "visual_review": "New title and reproduction pages inspected individually; remaining 18 body pages match the prior version.",
+  "compiler": "Local TeX Live 2026 LuaLaTeX via latexmk",
+  "title_pages": 1,
+  "main_pages_excluding_title": 19,
+  "remaining_body_pages_unchanged": true,
+  "source_snapshot_files_present": true
+}

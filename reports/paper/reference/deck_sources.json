@@ -1,0 +1,149 @@
+{
+  "evidence_as_of": "2026-10-12",
+  "deck_date": "2026-10-16",
+  "training_performed": false,
+  "sources": [
+    {
+      "snapshot": "alex_layers.csv",
+      "source": "reports/data/layer_results.csv",
+      "bytes": 1154
+    },
+    {
+      "snapshot": "alex_lambda.csv",
+      "source": "reports/data/lambda_results.csv",
+      "bytes": 834
+    },
+    {
+      "snapshot": "alex_epochs.csv",
+      "source": "reports/data/epoch_metrics.csv",
+      "bytes": 238937
+    },
+    {
+      "snapshot": "early_stop.csv",
+      "source": "reports/data/early_stop_results.csv",
+      "bytes": 1006
+    },
+    {
+      "snapshot": "early_stop_grid.csv",
+      "source": "reports/data/early_stop_rule_comparison.csv",
+      "bytes": 8886
+    },
+    {
+      "snapshot": "early_stop_smoothing.csv",
+      "source": "results/loss_balance/replay/smoothing_comparison.csv",
+      "bytes": 3821
+    },
+    {
+      "snapshot": "early_stop_other_layers.csv",
+      "source": "reports/data/other_layer_balance.csv",
+      "bytes": 1020
+    },
+    {
+      "snapshot": "alex_manifest.json",
+      "source": "reports/data/run_manifest.json",
+      "bytes": 49947
+    },
+    {
+      "snapshot": "resnet_summary.csv",
+      "source": "reports/resnet50/summary.csv",
+      "bytes": 975
+    },
+    {
+      "snapshot": "resnet_epochs.csv",
+      "source": "reports/resnet50/epoch_metrics.csv",
+      "bytes": 125765
+    },
+    {
+      "snapshot": "subdomain_summary.csv",
+      "source": "reports/subdomain_coral/lmmd/summary.csv",
+      "bytes": 1173
+    },
+    {
+      "snapshot": "subdomain_epochs.csv",
+      "source": "reports/subdomain_coral/lmmd/epoch_metrics.csv",
+      "bytes": 249638
+    },
+    {
+      "snapshot": "subdomain_diagnostics.csv",
+      "source": "reports/subdomain_coral/analysis/diagnostics.csv",
+      "bytes": 6230
+    },
+    {
+      "snapshot": "subdomain_classes.csv",
+      "source": "reports/subdomain_coral/analysis/class_diagnostics.csv",
+      "bytes": 91557
+    },
+    {
+      "snapshot": "subdomain_pairs.csv",
+      "source": "reports/subdomain_coral/analysis/comparisons.csv",
+      "bytes": 573
+    },
+    {
+      "snapshot": "subdomain_phases.csv",
+      "source": "reports/subdomain_coral/analysis/training_phases.csv",
+      "bytes": 3955
+    },
+    {
+      "snapshot": "resnet_lmmd_epochs.csv",
+      "source": "reports/resnet50_lmmd/data/metrics.csv",
+      "bytes": 28736
+    },
+    {
+      "snapshot": "resnet_lmmd_summary.json",
+      "source": "reports/resnet50_lmmd/data/summary.json",
+      "bytes": 764
+    },
+    {
+      "snapshot": "resnet_lmmd_classes.csv",
+      "source": "reports/resnet50_lmmd/data/class_accuracy.csv",
+      "bytes": 942
+    },
+    {
+      "snapshot": "resnet_lmmd_confusion.csv",
+      "source": "reports/resnet50_lmmd/data/confusion_counts.csv",
+      "bytes": 2603
+    },
+    {
+      "snapshot": "resnet_lmmd_comparison.csv",
+      "source": "reports/resnet50_lmmd/data/comparison.csv",
+      "bytes": 812
+    },
+    {
+      "snapshot": "alex_lmmd_author_validation.json",
+      "source": "reports/subdomain_coral/lmmd/author_validation.json",
+      "bytes": 446
+    },
+    {
+      "snapshot": "resnet_lmmd_author_validation.json",
+      "source": "reports/resnet50_lmmd/author_validation.json",
+      "bytes": 488
+    },
+    {
+      "snapshot": "subdomain_verification.json",
+      "source": "reports/subdomain_coral/verification.json",
+      "bytes": 965
+    },
+    {
+      "snapshot": "subdomain_math_verification.json",
+      "source": "reports/subdomain_coral/analysis/verification.json",
+      "bytes": 1118
+    },
+    {
+      "snapshot": "resnet_lmmd_run_verification.json",
+      "source": "reports/resnet50_lmmd/data/verification.json",
+      "bytes": 1082
+    },
+    {
+      "snapshot": "migration.json",
+      "source": "results/migration.json",
+      "bytes": 6538
+    }
+  ],
+  "papers": [
+    "https://arxiv.org/abs/1607.01719",
+    "https://arxiv.org/abs/2106.09388",
+    "https://proceedings.mlr.press/v80/chen18a.html",
+    "https://www.jmlr.org/papers/v13/gretton12a.html"
+  ],
+  "author_code": "https://github.com/easezyc/deep-transfer-learning/tree/master/UDA/pytorch1.0/DSAN"
+}

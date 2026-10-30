@@ -2,7 +2,9 @@
 
 Office-31 Amazon → Webcam；基于 [Deep CORAL](https://arxiv.org/abs/1607.01719)。
 
-最新结论见 [AlexNet 子域对齐综合报告](reports/subdomain_coral/analysis/report.md)，包含六组结果、损失公式与推导、尺度/类别结构诊断和可检验的机制推测。原始结果见 [LMMD 追加对照](reports/subdomain_coral/lmmd/report.md)及[类条件 CORAL 五组报告](reports/subdomain_coral/report.md)；原有不同层、adaptive_lambda 与早停研究见 [研究报告](reports/2026-10-08-coral-experiments.md)。[reports/](reports/README.md) 同时归档可直接查看的数据表和 PNG 图。
+完整研究整理见 [中文论文](reports/paper/README.md)与 [20 页汇报 PPT](reports/PPT/2/README.md)，均保留 LaTeX 源码、PDF、图表、证据快照和构建脚本。各阶段实验见 [报告索引](reports/README.md)，目录职责及新增实验约定见 [文件分布与归档说明](docs/repository-layout.md)。
+
+AlexNet 的机制分析见 [子域对齐综合报告](reports/subdomain_coral/analysis/report.md)，包含六组结果、损失公式与推导、尺度/类别结构诊断和可检验的机制推测。原始结果见 [LMMD 追加对照](reports/subdomain_coral/lmmd/report.md)及[类条件 CORAL 五组报告](reports/subdomain_coral/report.md)；原有不同层、adaptive_lambda 与早停研究见 [研究报告](reports/2026-10-08-coral-experiments.md)。ResNet-50 V2 + LMMD 的独立实验见 [实验报告](reports/resnet50_lmmd/report.md)。
 
 ## AlexNet fc8 类条件 CORAL
 
@@ -66,12 +68,18 @@ uv run --no-sync python -m src.training.train --suite resnet50 --coral_layers la
 
 六组已完成并通过统一核验，见 [ResNet-50 V2 六组报告](reports/resnet50/report.md)。layer4_logits 在第 42 轮停止，目标准确率 81.76%（650/795），比 no_coral 同轮高 3.65 个百分点。单独 pooled/layer4 的同轮增益为 +0.38/−0.13 个百分点；单种子结果仅作后续实验线索。
 
+## ResNet-50 V2 + LMMD 作者代码口径实验
+
+固定设计见 [独立协议](reports/resnet50_lmmd/protocol.md)。使用 256 维 bottleneck、作者代码的学习率与适应权重调度，每轮 87 步；目标标签用于最佳轮选择和连续 30 轮无提升停止，不进入训练损失。该组与上述 CORAL 六组的采样、预算和模型选择口径不同。
+
+已归档 72 轮、6,264 次更新；最佳第 42 轮为 93.71%，停止第 72 轮为 93.58%，详见 [报告与核验记录](reports/resnet50_lmmd/report.md)。代码位于 `src/experiments/resnet50_lmmd/`，完整日志、预测及指标位于 `results/resnet50_lmmd/author_code_seed42/`；最佳/停止模型权重仅在本地保留。
+
 ## 当前实验约定
 
 - 新运行所有随机 seed 固定为 **42**，包括 Python、NumPy、PyTorch、CUDA、DataLoader、worker；目标域不再加偏移。
 - 原始实验为 `no_adaptation`（仅 CE）和 `fc8`（CE + 0.5 CORAL(fc8)）。重跑后集中归档到 `results/original/`。
 - AlexNet 原有层位置进阶套件引用原始归档，不重跑、不复制对照组。缺失或不兼容的原始数据会报错；ResNet 与类条件 CORAL 套件分别使用自己的独立对照。
-- 使用 CSV/JSON 保存数据，不生成 `.pth`；实验输出图片只使用 PNG，数据集保留原始格式。
+- 使用 CSV/JSON/NPZ 保存实验记录，训练图使用 PNG；论文和汇报同时保留矢量 PDF。ResNet LMMD 另存最佳/停止模型权重，其余既有套件不生成 checkpoint。数据集和权重仅在本地保留，不提交。
 - 结果目录不包含 `seed_42` 中间层，seed 写入配置。历史配置和实际采样 seed 保留；新运行不再计算或比较文件、代码哈希。
 
 ```text
@@ -89,6 +97,8 @@ src/
     adaptive_lambda/    # 历史自适应权重实验
     subdomain/          # 五组匹配对照、十轮预热、类条件 fc8 CORAL
     lmmd/               # 复用五组对照，只新增一组 LMMD
+    resnet50/           # ResNet-50 V2 六组 CORAL
+    resnet50_lmmd/      # DSAN 作者代码口径的独立 LMMD 实验
   plotting/             # 单套件、综合绘图及 CSV 校验
 results/
   original/{no_adaptation,fc8}/
@@ -99,9 +109,18 @@ results/
   adaptive_lambda/{fc8,conv5_fc8}/
   combined_experiments/
   subdomain_coral/{no_adaptation,global,global_quarter,local,mixed,lmmd}/
+  resnet50/             # 六组 CORAL 的完整运行记录
+  resnet50_lmmd/author_code_seed42/
 reports/
+  resnet50/             # ResNet CORAL 报告、比较表、预测与图
+  resnet50_lmmd/        # LMMD 独立协议、报告、作者源码快照和证据
   subdomain_coral/       # 固定协议、原始报告、PNG 和最终预测/日志快照
     analysis/           # 六组综合报告、公式推导和事后诊断
+  PPT/2/                # 汇报的源码、PDF、图表和冻结数据
+  paper/                # 论文的源码、PDF、参考文献和冻结证据
+  Template/             # Beamer 模板原件与来源说明
+datasets/               # 本地 Office-31 原始图像和压缩包，不提交
+docs/                   # 文件分布、归档及新增实验约定
 ```
 
 每个运行保留 `config.json`、`environment.json`、`metrics.csv`、`train.log`、`summary.json` 与 `plots/*.png`。
@@ -252,7 +271,7 @@ conv5 为 `AlexNet.features[10]` 的 ReLU/MaxPool 前 `[B,256,13,13]` 输出，
 
 ## 数据与参考
 
-[Office-31 数据](https://people.eecs.berkeley.edu/~jhoffman/domainadapt/#datasets_code) 放到 `datasets/{amazon,dslr,webcam}/images/<class>/`，保留原始 JPG 数据。
+[Office-31 数据](https://people.eecs.berkeley.edu/~jhoffman/domainadapt/#datasets_code) 放到 `datasets/{amazon,dslr,webcam}/images/<class>/`，保留原始 JPG 数据。该目录和模型权重由 `.gitignore` 排除；`results/` 中的 CSV、JSON、NPZ、训练日志和图表纳入版本管理。
 
 - [原始 Caffe 实现](https://github.com/VisionLearningGroup/CORAL)
 - [Tracker 参考](https://github.com/Cyanogenoid/pytorch-vqa)

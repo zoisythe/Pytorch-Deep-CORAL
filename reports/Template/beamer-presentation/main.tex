@@ -1,0 +1,69 @@
+% !TeX program = lualatex
+\documentclass[
+	english,
+	sections numbered,
+	xcolor=dvipsnames,
+	aspectratio=169,
+]{beamer}
+
+\usepackage{babel}
+\usepackage[babel]{microtype}
+\usepackage[babel]{csquotes}
+\usepackage[american]{isodate}
+
+\usepackage[T1]{fontenc}
+
+% The pinned image resolves Fira Sans/Mono by FILE via kpathsea (TeX Live
+% ships them), but NOT by fontconfig FAMILY name — `fc-list` has no "Fira
+% Sans" entry here. Left to its own device, metropolis's font theme probes
+% for the family name, silently fails the probe, and falls back to the
+% default LaTeX font with only a PackageWarning. Loading the exact OTF
+% filenames explicitly (by stem, resolved via kpathsea) keeps the theme's
+% actual Fira look instead of a silent substitution.
+\usepackage{fontspec}
+\setsansfont{FiraSans-Light}[
+	BoldFont = FiraSans-Regular,
+	ItalicFont = FiraSans-LightItalic,
+	BoldItalicFont = FiraSans-Italic,
+]
+\setmonofont{FiraMono-Regular}[BoldFont = FiraMono-Medium]
+
+\usetheme[progressbar=frametitle]{metropolis}
+
+%%% GRAPHICS %%%
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+%%% MATH & SCIENCE %%%
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{siunitx}
+\usepackage{bm}
+\usepackage{dsfont}
+\usepackage{mathtools}
+
+%%% FLOATS %%%
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\input{setup-colors.tex}
+\input{setup-beamer.tex}
+\input{setup-math.tex}
+\input{setup-plots.tex}
+
+\title{Title of Your Presentation}
+\author{Author One\inst{1}, Author Two\inst{1}, and Author Three\inst{2}}
+\institute[]{%
+	\inst{1} Department of Example Studies, State University, Anytown, ST\\
+	\inst{2} Institute for Applied Research, Other University, Anytown, ST
+}
+\date{Conference Name, 2026}
+
+\begin{document}
+\maketitle
+
+\input{example-content.tex}
+\end{document}

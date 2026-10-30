@@ -1,0 +1,111 @@
+{
+  "run_count": 10,
+  "epochs_per_run": 50,
+  "total_epochs": 500,
+  "runs": [
+    {
+      "setting": "no_adaptation",
+      "directory": "results/original/no_adaptation",
+      "epochs": 50,
+      "final_target_accuracy": 0.46540880503144655,
+      "metrics_sha256": "76cd9e2c39e7ebf27cd2cc644176b40af839d8f3f4695f2626e77fdde91ccbd2",
+      "all_rng_seeds": 42
+    },
+    {
+      "setting": "fc8",
+      "directory": "results/original/fc8",
+      "epochs": 50,
+      "final_target_accuracy": 0.5421383647798742,
+      "metrics_sha256": "41a86b548f22d1af905271796a9f2b4d5fbe7cd793cb41ed18ec513c8d176a21",
+      "all_rng_seeds": 42
+    },
+    {
+      "setting": "fc6",
+      "directory": "results/fc_layers/fc6",
+      "epochs": 50,
+      "final_target_accuracy": 0.4440251572327044,
+      "metrics_sha256": "96579ce4806deb7054bd5acbc2a15f3317ea2a01a96f2f68f54d4eb3b4b4641f",
+      "all_rng_seeds": 42
+    },
+    {
+      "setting": "fc7",
+      "directory": "results/fc_layers/fc7",
+      "epochs": 50,
+      "final_target_accuracy": 0.4591194968553459,
+      "metrics_sha256": "b81b58f918d39d6d81ee67609b226b25648c3836ee8c3f2d32edf260983a1f27",
+      "all_rng_seeds": 42
+    },
+    {
+      "setting": "fc6_fc7",
+      "directory": "results/fc_layers/fc6_fc7",
+      "epochs": 50,
+      "final_target_accuracy": 0.4540880503144654,
+      "metrics_sha256": "b4ec924ee05d62e73e75a8a5f3242cfb8ec0232a76816cc7a26ac276e6345481",
+      "all_rng_seeds": 42
+    },
+    {
+      "setting": "fc6_fc8",
+      "directory": "results/fc_layers/fc6_fc8",
+      "epochs": 50,
+      "final_target_accuracy": 0.5232704402515723,
+      "metrics_sha256": "347d3cc4edb06ae5c417d3573ae3bd6e78e0ade01b3d906e58171f7d9215d9e3",
+      "all_rng_seeds": 42
+    },
+    {
+      "setting": "fc7_fc8",
+      "directory": "results/fc_layers/fc7_fc8",
+      "epochs": 50,
+      "final_target_accuracy": 0.5433962264150943,
+      "metrics_sha256": "5c1a500d384303a81410670233ec1c5f1c7fd9439d224dc2d6e933d81405bb11",
+      "all_rng_seeds": 42
+    },
+    {
+      "setting": "fc6_fc7_fc8",
+      "directory": "results/fc_layers/fc6_fc7_fc8",
+      "epochs": 50,
+      "final_target_accuracy": 0.5182389937106918,
+      "metrics_sha256": "66ab73b52ad58dbca0e8730b784cd66ed304f5bfd22a9f259c52a32aead61156",
+      "all_rng_seeds": 42
+    },
+    {
+      "setting": "conv5",
+      "directory": "results/conv5/conv5",
+      "epochs": 50,
+      "final_target_accuracy": 0.5081761006289308,
+      "metrics_sha256": "11f7227b868d63cb594debf0bde94052b272e79a232d4236adb2c146bc918cf8",
+      "all_rng_seeds": 42
+    },
+    {
+      "setting": "conv5_fc8",
+      "directory": "results/conv5/conv5_fc8",
+      "epochs": 50,
+      "final_target_accuracy": 0.5509433962264151,
+      "metrics_sha256": "e88c9f32840b2b3ea947daed9be8ca21177aa1077160e6767cba7e4a0a8cfa58",
+      "all_rng_seeds": 42
+    }
+  ],
+  "shared_original_controls": {
+    "no_adaptation": {
+      "metrics.csv": "76cd9e2c39e7ebf27cd2cc644176b40af839d8f3f4695f2626e77fdde91ccbd2",
+      "config.json": "dfafb88a0b03ebcf88ee281fd97a2ee0a3b003f03da2de3d1e01e308c4bfd389",
+      "environment.json": "68185df7b73a15adb19271f47875a110e7bc036cded49d13ad556724cd74213a",
+      "summary.json": "b72edad735c8531a5ef4ec3639ee9576ba3b108e5d7e2aa78768d464f2c25e42",
+      "train.log": "bd7d5aa8faddf504d2a430f9318a0cf7f4d356c8cd5a3aa06ccc5f841f471b43"
+    },
+    "fc8": {
+      "metrics.csv": "41a86b548f22d1af905271796a9f2b4d5fbe7cd793cb41ed18ec513c8d176a21",
+      "config.json": "2c6734591d2a4a50acd191674d73df997740b82341e18cbc67557759af2cd485",
+      "environment.json": "68185df7b73a15adb19271f47875a110e7bc036cded49d13ad556724cd74213a",
+      "summary.json": "08198bdf47ac749293169fb38bb3a0a5c7ed5d9963d428f4fa91a689d62df5cf",
+      "train.log": "78eebc7278011fbec60e5dbe90103a0558f577afbca706eee7a32044d3135ff0"
+    }
+  },
+  "dataset": {
+    "image_count": 4110,
+    "sha256_matches_original_archive": true
+  },
+  "experiment_images_png_only": true,
+  "experiment_pth_count": 0,
+  "seed_subdirectory_count": 0,
+  "csv_text_log_exact_equality": true
+}

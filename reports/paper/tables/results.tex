@@ -1,0 +1,74 @@
+\newcommand{\LayersRows}{%
+conv5+fc8 & 55.09 & +0.88 & 55.35 / 28 \\
+fc7+fc8 & 54.34 & +0.13 & 54.34 / 45 \\
+fc8 & 54.21 & +0.00 & 54.21 / 37 \\
+fc6+fc8 & 52.33 & -1.89 & 52.96 / 33 \\
+fc6+fc7+fc8 & 51.82 & -2.39 & 52.08 / 33 \\
+conv5 & 50.82 & -3.40 & 50.82 / 33 \\
+No adaptation & 46.54 & -7.67 & 48.05 / 3 \\
+fc7 & 45.91 & -8.30 & 46.92 / 45 \\
+fc6+fc7 & 45.41 & -8.81 & 45.66 / 14 \\
+fc6 & 44.40 & -9.81 & 46.67 / 22 \\
+}
+
+\newcommand{\WeightsRows}{%
+fc8：固定 & 50 & 54.21 / 37 & 54.21 & 0.500 \\
+conv5+fc8：固定 & 100 & 56.48 / 58 & 52.58 & 0.500 \\
+fc8：第 1 轮起自适应 & 50 & 54.97 / 28 & 51.32 & 3.645 \\
+fc8：第 41 轮起自适应 & 50 & 54.21 / 37 & 53.58 & 0.866 \\
+conv5+fc8：第 50 轮起自适应 & 100 & 55.97 / 58 & 53.58 & 6.936 \\
+}
+
+\newcommand{\SubdomainRows}{%
+no\_adaptation & $0$ & 46.54 & 46.60 \\
+global & $0.5G$ & 53.84 & 53.39 \\
+global\_quarter & $0.25G$ & 54.09 & 53.67 \\
+local & $0.5L_C$ & 42.14 & 43.22 \\
+mixed & $0.25G+0.25L_C$ & 49.56 & 49.85 \\
+lmmd & $0.5M$ & 66.16 & 66.16 \\
+}
+
+\newcommand{\ResnetRows}{%
+no\_coral & 100 & 80.00 & 80.00 & +0.00 \\
+logits & 37 & 81.01 & 78.49 & +2.52 \\
+pooled & 100 & 80.38 & 80.00 & +0.38 \\
+pooled\_logits & 42 & 80.25 & 78.11 & +2.14 \\
+layer4 & 100 & 79.87 & 80.00 & -0.13 \\
+layer4\_logits & 42 & 81.76 & 78.11 & +3.65 \\
+}
+
+\newcommand{\GeometryRows}{%
+global & 0.12058 & 0.326 & 10.11 & 0.427 \\
+local & 0.01053 & 0.331 & 5.14 & 0.229 \\
+lmmd & 0.03481 & 0.102 & 7.82 & 0.591 \\
+}
+
+\newcommand{\InventoryRows}{%
+1 & AlexNet CORAL & no\_adaptation\_fixed\_50 & 50 & 300 \\
+2 & AlexNet CORAL & fc8\_fixed\_50 & 50 & 300 \\
+3 & AlexNet CORAL & fc6\_fixed\_50 & 50 & 300 \\
+4 & AlexNet CORAL & fc6\_fc7\_fixed\_50 & 50 & 300 \\
+5 & AlexNet CORAL & fc6\_fc7\_fc8\_fixed\_50 & 50 & 300 \\
+6 & AlexNet CORAL & fc6\_fc8\_fixed\_50 & 50 & 300 \\
+7 & AlexNet CORAL & fc7\_fixed\_50 & 50 & 300 \\
+8 & AlexNet CORAL & fc7\_fc8\_fixed\_50 & 50 & 300 \\
+9 & AlexNet CORAL & conv5\_fixed\_50 & 50 & 300 \\
+10 & AlexNet CORAL & conv5\_fc8\_fixed\_50 & 50 & 300 \\
+11 & AlexNet CORAL & joint\_fixed\_100 & 100 & 600 \\
+12 & AlexNet CORAL & fc8\_adaptive\_full\_50 & 50 & 300 \\
+13 & AlexNet CORAL & fc8\_adaptive\_delayed\_50 & 50 & 300 \\
+14 & AlexNet CORAL & joint\_adaptive\_delayed\_100 & 100 & 600 \\
+15 & ResNet50 CORAL & no\_coral & 100 & 2400 \\
+16 & ResNet50 CORAL & logits & 37 & 888 \\
+17 & ResNet50 CORAL & pooled & 100 & 2400 \\
+18 & ResNet50 CORAL & pooled\_logits & 42 & 1008 \\
+19 & ResNet50 CORAL & layer4 & 100 & 2400 \\
+20 & ResNet50 CORAL & layer4\_logits & 42 & 1008 \\
+21 & AlexNet subdomain & no\_adaptation & 50 & 300 \\
+22 & AlexNet subdomain & global & 50 & 300 \\
+23 & AlexNet subdomain & global\_quarter & 50 & 300 \\
+24 & AlexNet subdomain & local & 50 & 300 \\
+25 & AlexNet subdomain & mixed & 50 & 300 \\
+26 & AlexNet subdomain & lmmd & 50 & 300 \\
+27 & ResNet50 LMMD & author\_code\_seed42 & 72 & 6264 \\
+}

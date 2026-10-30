@@ -1,0 +1,10 @@
+{
+  "setting": "conv5",
+  "epochs_completed": 50,
+  "final_source_accuracy": 0.9996450124245652,
+  "final_target_accuracy": 0.5081761006289308,
+  "best_target_accuracy": 0.5081761006289308,
+  "best_target_epoch": 33,
+  "elapsed_seconds": 580.2207927999998,
+  "peak_gpu_memory_bytes": 1777504256
+}

@@ -1,0 +1,59 @@
+{
+  "total_epochs": 400,
+  "png_count": 42,
+  "source_hashes_match_current": true,
+  "shared_environment_verified": true,
+  "csv_and_pth_logs_match": true,
+  "models": {
+    "no_adaptation": {
+      "epochs": 50,
+      "final_target_accuracy": 0.46540880503144655,
+      "checkpoint_finite_and_loadable": true
+    },
+    "fc6": {
+      "epochs": 50,
+      "final_target_accuracy": 0.44528301886792454,
+      "checkpoint_finite_and_loadable": true
+    },
+    "fc7": {
+      "epochs": 50,
+      "final_target_accuracy": 0.4490566037735849,
+      "checkpoint_finite_and_loadable": true
+    },
+    "fc8": {
+      "epochs": 50,
+      "final_target_accuracy": 0.539622641509434,
+      "checkpoint_finite_and_loadable": true
+    },
+    "fc6_fc7": {
+      "epochs": 50,
+      "final_target_accuracy": 0.45031446540880504,
+      "checkpoint_finite_and_loadable": true
+    },
+    "fc6_fc8": {
+      "epochs": 50,
+      "final_target_accuracy": 0.5207547169811321,
+      "checkpoint_finite_and_loadable": true
+    },
+    "fc7_fc8": {
+      "epochs": 50,
+      "final_target_accuracy": 0.539622641509434,
+      "checkpoint_finite_and_loadable": true
+    },
+    "fc6_fc7_fc8": {
+      "epochs": 50,
+      "final_target_accuracy": 0.5094339622641509,
+      "checkpoint_finite_and_loadable": true
+    }
+  },
+  "best_settings": [
+    "fc8",
+    "fc7_fc8"
+  ],
+  "independent_checkpoint_evaluation": {
+    "setting": "fc8",
+    "target_accuracy": 0.539622641509434,
+    "target_correct": 429,
+    "target_samples": 795
+  }
+}
